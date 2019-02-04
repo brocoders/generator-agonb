@@ -1,2 +1,2 @@
-# aws-ops-node-generator
+# generator agonb
 Npm page for generating deployment configuration.

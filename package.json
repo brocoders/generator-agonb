@@ -1,15 +1,22 @@
 {
-  "name": "aws-ops-node-generator",
+  "name": "generator-agonb",
   "version": "1.0.0",
   "description": "AWS deployment configuration generator for nodejs app.",
-  "main": "index.js",
+  "engines": {
+    "node": ">=8.10",
+    "npm": ">= 6.4.1"
+  },
+  "files": [
+    "generators"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dirtyRuby/aws-ops-node-generator.git"
+    "url": "git+https://github.com/dirtyRuby/generator-agonb.git"
   },
+  "keywords": "yeoman-generator",
   "author": "Artem Stupachenko",
   "license": "ISC",
   "bugs": {
@@ -18,5 +25,11 @@
   "homepage": "https://github.com/dirtyRuby/aws-ops-node-generator#readme",
   "dependencies": {
     "yeoman-generator": "^3.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1"
   }
 }
