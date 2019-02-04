@@ -19,21 +19,48 @@ class Agonb extends Generator {
     return this._projectApplicationName
   }
 
-  async prompting() {
-    this.answers = await this.prompt([{
-      type: 'input'
-      , name: 'repository_url'
-      , message: 'Your project repository url (ssh)'
-    }
-    , {
-      type: 'input'
-      , name: 'database_type'
-      , message: 'Your database type'
-      , default: 'postgres'
-    }]);
+  initializing() {
+    this.on('error', (err) => {
+      console.log(err.message)
 
-    const [, projectDestinationPath] = this.answers.repository_url.match(/^git@github\.com:.+\/(!?.+)\.git$/)
-    const [, projectApplicationName] = projectDestinationPath.match(/^(!?.+)-back-end-app$/)
+      if (this.projectDestinationPath) {
+        console.info(`Removing project directory: ${this.projectDestinationPath}...`)
+        this.spawnCommandSync('rm', ['-rf', `./${this.projectDestinationPath}`])
+        console.info('Done')
+      }
+
+      process.exit(0)
+    })
+  }
+
+  async prompting() {
+    this.answers = await this.prompt([
+      {
+        type: 'input'
+        , name: 'repository_url'
+        , message: 'Your project repository url'
+      }
+      , {
+        type: 'input'
+        , name: 'database_type'
+        , message: 'Your database type'
+        , default: 'postgres'
+      }
+    ]);
+  }
+
+  configuring() {
+    let projectDestinationPath, projectApplicationName
+
+    try {
+      [,,, projectDestinationPath] = this.answers.repository_url.match(/^(https:\/\/github|git@github)\.com(:|\/).+\/(.+)$/)
+
+      projectDestinationPath = projectDestinationPath.replace(/\.git$/, '');
+
+      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-back-end-app$/)
+    } catch (e) {
+      throw new Error('Error during application directory/name parsing')
+    }
 
     if (!projectDestinationPath) throw new Error('Unable to extract project name')
     if (!projectApplicationName) throw new Error('Unable to extract application name')
