@@ -2,26 +2,11 @@
 cd /home/ec2-user/node-js-app
 mkdir -p log
 
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Install Node.js
-nvm install 10
-nvm use 10
-
-# Update NPM
-#npm install npm@latest -g
-
-# Install GIT
-sudo yum -y install git
-
-# Install AWS-SDK
-npm install aws-sdk
-
-# Install pm2
-npm i -g pm2 @nestjs/cli typescript ts-node
+npm i -g @nestjs/cli typescript ts-node
 npm i
 
 db_name=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-db-name  --with-decryption --query Parameters[0].Value)
@@ -45,14 +30,13 @@ user_access_key=`echo $user_access_key | sed -e 's/^"//' -e 's/"$//'`
 user_secret_access_key=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-IAMStackUserSecretAccessKeySSM  --with-decryption --query Parameters[0].Value)
 user_secret_access_key=`echo $user_secret_access_key | sed -e 's/^"//' -e 's/"$//'`
 
-rm ./production.env
+[ -f production.env ] && rm production.env || echo production.env is not exists yet
 
 echo DATABASE_NAME=$db_name >> production.env
 echo DATABASE_USERNAME=$db_user >> production.env
 echo DATABASE_PASSWORD=$db_password >> production.env
 echo DATABASE_HOST=$db_host >> production.env
 echo NODE_ENV=production >> production.env
-echo PORT=80 >> production.env
 echo TOKEN_EXPIRATION_HOUR=24 >> production.env
 echo DATABASE_SYNCHRONIZE=false >> production.env
 echo AUTH_JWT_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a358e160a078390957e5481b069761e8b8c1dcd0489cb0fa2ab302071d878634878161 >> production.env
@@ -66,5 +50,4 @@ echo Copy project specific variables to production.env
 cat .env.custom >> production.env
 
 npm run prestart:prod
-npm run migration:run
 pm2 start npm --no-automation --name <%= application_name %> -- run start:prod

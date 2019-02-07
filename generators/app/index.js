@@ -1,5 +1,5 @@
 'use-strict'
-
+const { execSync } = require('child_process')
 const Generator = require('yeoman-generator')
 
 class Agonb extends Generator {
@@ -108,7 +108,10 @@ class Agonb extends Generator {
       , this.destinationPath(`${projectDestinationPath}/.env.custom`)
     )
 
-    this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i', '-e', 's/getHello/getHealthCheck/g', '{}', '\;']) // eslint-disable-line no-useless-escape
+    this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/getHello/getHealthCheck/g', '{}', '\;']) // eslint-disable-line no-useless-escape
+    this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-name', '*.bak', '-type', 'f', '-delete'])
+
+    execSync(`echo .idea >> ./${projectDestinationPath}/.gitignore`)
   }
 
   end() {
