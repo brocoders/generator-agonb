@@ -412,6 +412,9 @@
             "Type": "String",
             "Default": "arn:aws:acm:us-west-2:443954526038:certificate/af59b0b1-9f27-4a9f-b37b-7453cc0ba8d9",
             "Description": "SSL Certficate ARN"
+        },
+        "SlackNotificationsHook": {
+            "Type": "String"
         }
     },
     "Mappings": {
@@ -1459,6 +1462,24 @@
                 "CodeBuildPolicy"
             ],
             "Properties": {
+                "LogsConfig": {
+                    "S3Logs": {
+                        "Status": "ENABLED",
+                        "Location": {
+                            "Fn::Join": [
+                                "/",
+                                [
+                                    {
+                                        "Fn::ImportValue": "TestsCiProjectCodeBuildLogsS3Arn"
+                                    },
+                                    {
+                                        "Ref": "ProjectId"
+                                    }
+                                ]
+                            ]
+                        }
+                    }
+                },
                 "Artifacts": {
                     "Packaging": "zip",
                     "Type": "codepipeline"
@@ -2966,7 +2987,109 @@
                     "id": "5695c7c1-64bf-4842-8b15-f9253b9902d9"
                 }
             }
-        }
+        },
+        "ProjectPipelineTrigger": {
+          "Type": "AWS::Events::Rule",
+          "Properties": {
+            "Description": "CloudWatch rule for triggering pipeline events",
+            "Name": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "ProjectId"
+                  },
+                  "ProjectPipelineTrigger"
+                ]
+              ]
+            },
+            "EventPattern": {
+              "source": [
+                "aws.codepipeline"
+              ],
+              "detail-type": [
+                "CodePipeline Action Execution State Change"
+              ],
+              "detail": {
+                "state": [
+                  "STARTED",
+                  "FAILED",
+                  "SUCCEEDED"
+                ],
+                "pipeline": [
+                    {
+                        "Fn::Join": [
+                            "-",
+                            [
+                            {
+                                "Ref": "ProjectId"
+                            },
+                            "Pipeline"
+                            ]
+                        ]
+                    }
+                ]
+              }
+            },
+            "State": "ENABLED",
+            "Targets": [
+              {
+                "Id": {
+                  "Fn::Join": [
+                    "",
+                    [
+                        {
+                            "Ref": "ProjectId"
+                        },
+                        "CodePipeLineNotification"
+                    ]
+                  ]
+                },
+                "Arn": {
+                  "Fn::ImportValue": "OpsCodePipelineNotification"
+                },
+                "InputTransformer": {
+                  "InputPathsMap": {
+                    "detail": "$.detail",
+                    "version": "$.version",
+                    "id": "$.id",
+                    "detail-type": "$.detail-type",
+                    "source": "$.source",
+                    "account": "$.account",
+                    "time": "$.time",
+                    "region": "$.region",
+                    "resources": "$.resources"
+                  },
+                  "InputTemplate": {
+                    "Fn::Join": [
+                        ",",
+                        [
+                            "{\"detail\": <detail>",
+                            "\"version\": <version>",
+                            "\"id\": <id>",
+                            "\"detail-type\": <detail-type>",
+                            "\"source\": <source>",
+                            "\"account\": <account>",
+                            "\"time\": <time>",
+                            "\"region\": <region>",
+                            "\"resources\": <resources>",
+                            {
+                                "Fn::Sub": "\"slackHookUrl\": \"${SlackNotificationsHook}\""
+                            },
+                            {
+                                "Fn::Sub": "\"codeBuildProject\": \"${CodeBuildProject}\""
+                            },
+                            {
+                                "Fn::Sub": "\"projectId\": \"${ProjectId}\"}"
+                            }
+                        ]
+                    ]
+                  }
+                }
+              }
+           ]
+         }
+       }
     },
     "Outputs": {
         "CarierWaveBucketURL": {
@@ -3007,6 +3130,12 @@
                         "/"
                     ]
                 ]
+            }
+        },
+        "AppInstanceIp": {
+            "Description": "Application Instance Ip",
+            "Value": {
+                "Fn::GetAtt": ["WebApp01", "PublicIp"]
             }
         }
     }
