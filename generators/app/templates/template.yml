@@ -3,7 +3,7 @@
     "Conditions": {
         "CreateCodeBuildResources": {
             "Fn::Equals": [
-                false,
+                true,
                 true
             ]
         },
@@ -1560,9 +1560,15 @@
                                     "NoVal"
                                 ]
                             }
+                        },
+                        {
+                            "Name": "PROJECT_ID",
+                            "Value": {
+                              "Ref": "ProjectId"
+                            }
                         }
                     ],
-                    "Image": "aws/codebuild/eb-java-8-amazonlinux-64:2.4.3",
+                    "Image": "aws/codebuild/nodejs:10.14.1",
                     "Type": "container"
                 },
                 "Name": {
@@ -1572,7 +1578,8 @@
                     "Ref": "CodeBuildRole"
                 },
                 "Source": {
-                    "Type": "codepipeline"
+                    "Type": "codepipeline",
+                    "BuildSpec": "run.tests.buildspec.yml"
                 }
             },
             "Type": "AWS::CodeBuild::Project",
@@ -2129,35 +2136,17 @@
                                 },
                                 "InputArtifacts": [
                                     {
-                                        "Fn::If": [
-                                            "CreateCodeBuildResources",
-                                            {
-                                                "Name": {
-                                                    "Fn::Join": [
-                                                        "-",
-                                                        [
-                                                            {
-                                                                "Ref": "ProjectId"
-                                                            },
-                                                            "BuildArtifact"
-                                                        ]
-                                                    ]
-                                                }
-                                            },
-                                            {
-                                                "Name": {
-                                                    "Fn::Join": [
-                                                        "-",
-                                                        [
-                                                            {
-                                                                "Ref": "ProjectId"
-                                                            },
-                                                            "SourceArtifact"
-                                                        ]
-                                                    ]
-                                                }
-                                            }
-                                        ]
+                                        "Name": {
+                                            "Fn::Join": [
+                                                "-",
+                                                [
+                                                    {
+                                                        "Ref": "ProjectId"
+                                                    },
+                                                    "SourceArtifact"
+                                                ]
+                                            ]
+                                        }
                                     }
                                 ],
                                 "Name": "Deploy",

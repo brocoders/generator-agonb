@@ -1,10 +1,14 @@
 {
   "extends": "airbnb-base",
+  "plugins": [
+    "mocha"
+  ],
   "rules": {
     "comma-style": [ 2, "first" ],
     "comma-dangle": [ 2, "never" ],
     "camelcase": [0],
     "semi": [0],
-    "no-underscore-dangle": [0]
+    "no-underscore-dangle": [0],
+    "mocha/no-exclusive-tests": "error"
   }
 }
