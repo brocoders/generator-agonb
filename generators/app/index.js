@@ -108,6 +108,11 @@ class Agonb extends Generator {
       , this.destinationPath(`${projectDestinationPath}/.env.custom`)
     )
 
+    this.fs.copyTpl(
+        this.templatePath('run.tests.buildspec.yml')
+        , this.destinationPath(`${projectDestinationPath}/run.tests.buildspec.yml`)
+    )
+
     this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/getHello/getHealthCheck/g', '{}', '\;']) // eslint-disable-line no-useless-escape
     this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-name', '*.bak', '-type', 'f', '-delete'])
 
