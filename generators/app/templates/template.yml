@@ -415,6 +415,10 @@
         },
         "SlackNotificationsHook": {
             "Type": "String"
+        },
+        "SshKeys": {
+            "Type": "CommaDelimitedList",
+            "Description": "List of authorized keys for instances"
         }
     },
     "Mappings": {
@@ -2583,6 +2587,25 @@
                                 "sed -i '/AuthorizedKeysCommand /s/.*/AuthorizedKeysCommand \\/usr\\/local\\/bin\\/get_authorized_keys/g' /etc/ssh/sshd_config",
                                 "sed -i '/AuthorizedKeysCommandUser /s/.*/AuthorizedKeysCommandUser root/g' /etc/ssh/sshd_config",
                                 "/etc/init.d/sshd restart",
+                                "IFS=,",
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "read SSH_KEYS_USR_INPUT <<< \"",
+                                      {
+                                        "Fn::Join": [
+                                          ",",
+                                          {
+                                            "Ref": "SshKeys"
+                                          }
+                                        ]
+                                      },
+                                      "\""
+                                    ]
+                                  ]
+                                },
+                                "for i in $SSH_KEYS_USR_INPUT; do echo $i >> /home/ec2-user/.ssh/authorized_keys; done",
                                 "yum update -y aws-cfn-bootstrap",
                                 "# Install the AWS CodeDeploy Agent.",
                                 "cd /home/ec2-user/",
