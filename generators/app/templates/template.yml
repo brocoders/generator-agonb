@@ -2141,7 +2141,7 @@
                                         },
                                         "Configuration": {
                                             "ProjectName": {
-                                                "Ref": "ProjectId"
+                                                "Fn::Sub": "${ProjectId}-test"
                                             }
                                         },
                                         "InputArtifacts": [

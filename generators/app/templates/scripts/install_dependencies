@@ -44,6 +44,8 @@ echo API_PREFIX=api/v1 >> production.env
 echo AUTH_JWT_TOKEN_EXPIRES_IN=3600 >> production.env
 echo DATABASE_PORT=5432 >> production.env
 echo DATABASE_TYPE=<%= database_type %> >> production.env
+echo ACCESS_KEY_ID=$user_access_key >> production.env
+echo SECRET_ACCESS_KEY=$user_secret_access_key >> production.env
 
 
 echo Copy project specific variables to production.env
