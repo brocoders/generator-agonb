@@ -1500,7 +1500,7 @@
                 ]
             }
         },
-        "CodeBuildProject": {
+        "TestCodeBuildProject": {
             "Condition": "CreateCodeBuildResources",
             "DependsOn": [
                 "CodeBuildRole", "CodeBuildPolicy"
@@ -1517,7 +1517,7 @@
                                         "Fn::ImportValue": "TestsCiProjectCodeBuildLogsS3Arn"
                                     },
                                     {
-                                        "Ref": "ProjectId"
+                                        "Fn::Sub": "${ProjectId}-test"
                                     }
                                 ]
                             ]
@@ -1637,7 +1637,7 @@
                     "Type": "container"
                 },
                 "Name": {
-                    "Ref": "ProjectId"
+                    "Fn::Sub": "${ProjectId}-test"
                 },
                 "ServiceRole": {
                     "Ref": "CodeBuildRole"
@@ -1939,7 +1939,7 @@
                                             "Resource": [
                                                 {
                                                     "Fn::GetAtt": [
-                                                        "CodeBuildProject",
+                                                        "TestCodeBuildProject",
                                                         "Arn"
                                                     ]
                                                 }
@@ -3140,7 +3140,7 @@
                                 "Fn::Sub": "\"slackHookUrl\": \"${SlackNotificationsHook}\""
                             },
                             {
-                                "Fn::Sub": "\"actionStageMap\": [{ \"stages\": [\"Source\", \"ApplicationSource\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"SUCCEEDED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"FAILED\"], \"options\": { \"codeBuildProject\": \"${CodeBuildProject}\" } }, { \"stages\": [\"Application\", \"Deploy\", \"SUCCEEDED\"] }]"
+                                "Fn::Sub": "\"actionStageMap\": [{ \"stages\": [\"Source\", \"ApplicationSource\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"SUCCEEDED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"FAILED\"], \"options\": { \"codeBuildProject\": \"${TestCodeBuildProject}\" } }, { \"stages\": [\"Application\", \"Deploy\", \"SUCCEEDED\"] }]"
                             },
                             {
                                 "Fn::Sub": "\"projectId\": \"${ProjectId}\"}"

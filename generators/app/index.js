@@ -117,6 +117,7 @@ class Agonb extends Generator {
     this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-name', '*.bak', '-type', 'f', '-delete'])
 
     execSync(`echo .idea >> ./${projectDestinationPath}/.gitignore`)
+    execSync(`echo node_modules >> ./${projectDestinationPath}/.gitignore`)
   }
 
   end() {
