@@ -1460,10 +1460,50 @@
                 }
             }
         },
+        "CodeBuildPolicyS3LogsPolicy": {
+            "DependsOn": ["CodeBuildRole"],
+            "Condition": "CreateCodeBuildResources",
+            "Type": "AWS::IAM::Policy",
+            "Description": "CodeBuild policy for logging build details to S3 bucket.",
+            "Properties": {
+                "PolicyDocument": {
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Resource": [
+                                {
+                                    "Fn::ImportValue": "TestsCiProjectCodeBuildLogsS3Arn"
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "/",
+                                        [
+                                            { "Fn::ImportValue": "TestsCiProjectCodeBuildLogsS3Arn" },
+                                            "*"
+                                        ]
+                                    ]
+                                }
+                            ],
+                            "Action": [
+                                "s3:PutObject",
+                                "s3:GetBucketAcl",
+                                "s3:GetBucketLocation"
+                            ]
+                        }
+                    ]
+                },
+                "PolicyName": "CodeBuildPolicyS3Logs",
+                "Roles": [
+                    {
+                        "Ref": "CodeBuildRole"
+                    }
+                ]
+            }
+        },
         "CodeBuildProject": {
             "Condition": "CreateCodeBuildResources",
             "DependsOn": [
-                "CodeBuildPolicy"
+                "CodeBuildRole", "CodeBuildPolicy"
             ],
             "Properties": {
                 "LogsConfig": {
@@ -3100,7 +3140,7 @@
                                 "Fn::Sub": "\"slackHookUrl\": \"${SlackNotificationsHook}\""
                             },
                             {
-                                "Fn::Sub": "\"codeBuildProject\": \"${CodeBuildProject}\""
+                                "Fn::Sub": "\"actionStageMap\": [{ \"stages\": [\"Source\", \"ApplicationSource\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"SUCCEEDED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"FAILED\"], \"options\": { \"codeBuildProject\": \"${CodeBuildProject}\" } }, { \"stages\": [\"Application\", \"Deploy\", \"SUCCEEDED\"] }]"
                             },
                             {
                                 "Fn::Sub": "\"projectId\": \"${ProjectId}\"}"
@@ -3160,6 +3200,12 @@
             "Value": {
                 "Fn::GetAtt": ["WebApp01", "PublicIp"]
             }
+        },
+        "AppUrl": {
+          "Description": "Application Instance Ip",
+          "Value":{
+              "Fn::Sub": "\"backendUrl\": \"https://${SubDomain}.${HostedZone}\""
+          }
         }
     }
 }

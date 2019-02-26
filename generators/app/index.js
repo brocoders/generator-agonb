@@ -57,7 +57,7 @@ class Agonb extends Generator {
 
       projectDestinationPath = projectDestinationPath.replace(/\.git$/, '');
 
-      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-back-end-app$/)
+      [, projectApplicationName] = projectDestinationPath.match(/^(.+)_backend_app$/)
     } catch (e) {
       throw new Error('Error during application directory/name parsing')
     }
