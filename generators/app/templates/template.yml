@@ -1517,6 +1517,9 @@
                                         "Fn::ImportValue": "TestsCiProjectCodeBuildLogsS3Arn"
                                     },
                                     {
+                                      "Ref": "ProjectId"
+                                    },
+                                    {
                                         "Fn::Sub": "${ProjectId}-test"
                                     }
                                 ]
