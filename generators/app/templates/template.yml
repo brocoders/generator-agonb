@@ -24,9 +24,25 @@
                     ]
                 }
             ]
+        },
+        "IsNodeProject": {
+            "Fn::Equals": [
+                {
+                    "Ref": "ProjectEnv"
+                },
+                "nodejs"
+            ]
+        },
+        "IsRailsProject": {
+            "Fn::Equals": [
+                {
+                    "Ref": "ProjectEnv"
+                },
+                "rubyonrails"
+            ]
         }
     },
-    "Description": "A NodeJs web application deployed to Amazon EC2.",
+    "Description": "A web application deployed to Amazon EC2.",
     "Metadata": {
         "CodeBuildImage": "aws/codebuild/eb-java-8-amazonlinux-64:2.4.3",
         "CreateCodeBuild": false,
@@ -289,6 +305,12 @@
         }
     },
     "Parameters": {
+        "ProjectEnv": {
+            "Description": "Core project technology",
+            "Type": "String",
+            "AllowedValues": ["nodejs", "rubyonrails"],
+            "ConstraintDescription": "ProjectEnv must be one of: nodejs, rubyonrails."
+        },
         "AppName": {
             "Description": "Name of the application.",
             "MaxLength": 100,
@@ -831,6 +853,21 @@
                 "HVMG2": "NOT_SUPPORTED"
             }
         }
+    ,
+        "ProjectEnvMap": {
+            "nodejs": {
+                "StackDescription": "A NodeJs web application deployed to Amazon EC2.",
+                "CodeBuildImage": "aws/codebuild/nodejs:10.14.1",
+                "AppInstancePort": "3000",
+                "AppHealthCheckTarget": "HTTP:3000/"
+            },
+            "rubyonrails": {
+                "StackDescription": "A Ruby On Rails web application deployed to Amazon EC2.",
+                "CodeBuildImage": "aws/codebuild/ruby:2.5.3",
+                "AppInstancePort": "80",
+                "AppHealthCheckTarget": "HTTP:80/api/health_check"
+            }
+        }
     },
     "Resources": {
         "ElasticLoadBalancer": {
@@ -839,7 +876,9 @@
                 "HealthCheck": {
                     "HealthyThreshold": "2",
                     "Interval": "6",
-                    "Target": "HTTP:3000/",
+                    "Target": {
+                        "Fn::FindInMap": ["ProjectEnvMap", { "Ref": "ProjectEnv" }, "AppHealthCheckTarget"]
+                    },
                     "Timeout": "5",
                     "UnhealthyThreshold": "10"
                 },
@@ -866,7 +905,9 @@
                 ],
                 "Listeners": [
                     {
-                        "InstancePort": "3000",
+                        "InstancePort": {
+                            "Fn::FindInMap": ["ProjectEnvMap", { "Ref": "ProjectEnv" }, "AppInstancePort"]
+                        },
                         "LoadBalancerPort": "443",
                         "InstanceProtocol": "HTTP",
                         "Protocol": "HTTPS",
@@ -878,7 +919,9 @@
                         }
                     },
                     {
-                        "InstancePort": "3000",
+                        "InstancePort": {
+                            "Fn::FindInMap": ["ProjectEnvMap", { "Ref": "ProjectEnv" }, "AppInstancePort"]
+                        },
                         "LoadBalancerPort": "80",
                         "InstanceProtocol": "HTTP",
                         "Protocol": "HTTP",
@@ -1636,7 +1679,9 @@
                             }
                         }
                     ],
-                    "Image": "aws/codebuild/nodejs:10.14.1",
+                    "Image": {
+                        "Fn::FindInMap": ["ProjectEnvMap", { "Ref": "ProjectEnv" }, "CodeBuildImage"]
+                    },
                     "Type": "container"
                 },
                 "Name": {
@@ -2621,90 +2666,176 @@
                 ],
                 "UserData": {
                     "Fn::Base64": {
-                        "Fn::Join": [
-                            "\n\n",
-                            [
-                                "#!/bin/bash -x",
-                                "wget -O /usr/local/bin/get_authorized_keys https://s3-us-west-2.amazonaws.com/awscodestar-remote-access-us-west-2/get_authorized_keys",
-                                "chmod 755 /usr/local/bin/get_authorized_keys",
-                                "sed -i '/AuthorizedKeysCommand /s/.*/AuthorizedKeysCommand \\/usr\\/local\\/bin\\/get_authorized_keys/g' /etc/ssh/sshd_config",
-                                "sed -i '/AuthorizedKeysCommandUser /s/.*/AuthorizedKeysCommandUser root/g' /etc/ssh/sshd_config",
-                                "/etc/init.d/sshd restart",
-                                "IFS=,",
-                                {
-                                  "Fn::Join": [
-                                    "",
+                        "Fn::If": [
+                            "IsNodeProject",
+                            {
+                                "Fn::Join": [
+                                    "\n\n",
                                     [
-                                      "read SSH_KEYS_USR_INPUT <<< \"",
-                                      {
+                                        "#!/bin/bash -x",
+                                        "wget -O /usr/local/bin/get_authorized_keys https://s3-us-west-2.amazonaws.com/awscodestar-remote-access-us-west-2/get_authorized_keys",
+                                        "chmod 755 /usr/local/bin/get_authorized_keys",
+                                        "sed -i '/AuthorizedKeysCommand /s/.*/AuthorizedKeysCommand \\/usr\\/local\\/bin\\/get_authorized_keys/g' /etc/ssh/sshd_config",
+                                        "sed -i '/AuthorizedKeysCommandUser /s/.*/AuthorizedKeysCommandUser root/g' /etc/ssh/sshd_config",
+                                        "/etc/init.d/sshd restart",
+                                        "IFS=,",
+                                        {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "read SSH_KEYS_USR_INPUT <<< \"",
+                                                    {
+                                                        "Fn::Join": [
+                                                            ",",
+                                                            {
+                                                                "Ref": "SshKeys"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "\""
+                                                ]
+                                            ]
+                                        },
+                                        "for i in $SSH_KEYS_USR_INPUT; do echo $i >> /home/ec2-user/.ssh/authorized_keys; done",
+                                        "yum update -y aws-cfn-bootstrap",
+                                        "# Install the AWS CodeDeploy Agent.",
+                                        "cd /home/ec2-user/",
+                                        {
+                                            "Fn::Sub": [
+                                                "wget https://aws-codedeploy-${AWS::Region}.s3.amazonaws.com/latest/codedeploy-agent.noarch.rpm",
+                                                {}
+                                            ]
+                                        },
+                                        "yum -y install codedeploy-agent.noarch.rpm",
+                                        "# Install pip and python dev libraries.",
+                                        "yum install -y python27-devel python27-pip gcc",
+                                        "pip install boto3",
+                                        "pip install pycrypto",
+                                        "pip install --upgrade awscli",
+                                        "# Install psql gem native extension dependencies.",
+                                        "yum -y install curl",
+                                        "yum -y install git",
+                                        "yum -y install epel-release",
+                                        "yum -y install postgresql-devel",
+                                        "yum -y install gcc-c++ make",
+                                        "# Install node.js as js runtime environment.",
+                                        "mkdir /root/.nvm",
+                                        "export NVM_DIR=\"/root/.nvm\"",
+                                        "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash",
+                                        "[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"",
+                                        "[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/bash_completion\"",
+                                        "sudo echo 'export NVM_DIR=\"$HOME/.nvm\"' >> /root/.bash_profile",
+                                        "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"' >> /root/.bash_profile",
+                                        "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/bash_completion\"' >> /root/.bash_profile",
+                                        "sudo echo 'export NVM_DIR=\"$HOME/.nvm\"' >> /root/.bashrc",
+                                        "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"' >> /root/.bashrc",
+                                        "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/bash_completion\"' >> /root/.bashrc",
+                                        "nvm install --lts",
+                                        "node --version",
+                                        "npm i -g pm2",
+                                        "# Install nginx.",
+                                        "# yum install -y nginx",
+                                        "# sed -i -- 's/80 default_server/81 default_server/' /etc/nginx/nginx.conf",
+                                        "# Start ImageMagick install",
+                                        "# wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm",
+                                        "# rpm -Uvh epel-release-6*.rpm",
+                                        "# wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm",
+                                        "# rpm -Uvh remi-release-6*.rpm",
+                                        "# enabling first repo in remi config",
+                                        "sed -i -- \"0,/enabled=0/s/enabled=0/enabled=1/\" /etc/yum.repos.d/remi.repo",
+                                        "# yum install -y ImageMagick ImageMagick-devel",
+                                        "# End ImageMagick install",
+                                        "rm /home/ec2-user/user_data.log",
+                                        "echo node_version - $(node -v || echo N/A) >> /home/ec2-user/user_data.log",
+                                        "echo npm_version - $(npm -v || echo N/A) >> /home/ec2-user/user_data.log",
+                                        "echo nvm_version - $(nvm --version || echo N/A) >> /home/ec2-user/user_data.log",
+                                        "echo $(pm2 -v || echo pm2 - N/A\n) >> /home/ec2-user/user_data.log",
+                                        "echo $(yum history) >> /home/ec2-user/user_data.log"
+                                    ]
+                                ]
+                            },
+                            {
+                                "Fn::If": [
+                                    "IsRailsProject",
+                                    {
                                         "Fn::Join": [
-                                          ",",
-                                          {
-                                            "Ref": "SshKeys"
-                                          }
+                                            "\n\n",
+                                            [
+                                                "#!/bin/bash -x",
+                                                "yum update -y",
+                                                {
+                                                    "Fn::Sub": ["wget -O /usr/local/bin/get_authorized_keys https://s3-${AWS::Region}.amazonaws.com/awscodestar-remote-access-${AWS::Region}/get_authorized_keys", {}]
+                                                },
+                                                "chmod 755 /usr/local/bin/get_authorized_keys",
+                                                "sed -i '/AuthorizedKeysCommand /s/.*/AuthorizedKeysCommand \\/usr\\/local\\/bin\\/get_authorized_keys/g' /etc/ssh/sshd_config",
+                                                "sed -i '/AuthorizedKeysCommandUser /s/.*/AuthorizedKeysCommandUser root/g' /etc/ssh/sshd_config",
+                                                "/etc/init.d/sshd restart",
+                                                "yum update -y aws-cfn-bootstrap",
+                                                "IFS=,",
+                                                {
+                                                    "Fn::Join": [
+                                                        "",
+                                                        [
+                                                            "read SSH_KEYS_USR_INPUT <<< \"",
+                                                            {
+                                                                "Fn::Join": [
+                                                                    ",",
+                                                                    {
+                                                                        "Ref": "SshKeys"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "\""
+                                                        ]
+                                                    ]
+                                                },
+                                                "for i in $SSH_KEYS_USR_INPUT; do echo $i >> /home/ec2-user/.ssh/authorized_keys; done",
+                                                "echo Install the AWS CodeDeploy Agent.",
+                                                {
+                                                    "Fn::Sub": ["cd /home/ec2-user/\n\nwget https://aws-codedeploy-${AWS::Region}.s3.amazonaws.com/latest/codedeploy-agent.noarch.rpm", {}]
+                                                },
+                                                "yum -y install codedeploy-agent.noarch.rpm",
+                                                "echo Install pip and python dev libraries.",
+                                                "yum -y install autoconf automake gcc gcc-c++ git libtool make nasm pkgconfig zlib-devel patch bison libffi-devel patch readline-devel sqlite-devel libyaml-devel openssl-devel",
+                                                "yum install -y python27-devel python27-pip gcc",
+                                                "pip install boto3",
+                                                "pip install pycrypto",
+                                                "pip install --upgrade awscli",
+                                                "echo Install psql gem native extension dependencies.",
+                                                "yum -y install postgresql-devel",
+                                                "echo Install node.js as js runtime environment.",
+                                                "curl -sL https://rpm.nodesource.com/setup | bash -",
+                                                "yum install -y nodejs",
+                                                "echo Install nginx.",
+                                                "yum install -y nginx",
+                                                "sed -i -- 's/80 default_server/81 default_server/' /etc/nginx/nginx.conf",
+                                                "echo Start ImageMagick install",
+                                                "wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm",
+                                                "rpm -Uvh epel-release-6*.rpm",
+                                                "wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm",
+                                                "rpm -Uvh remi-release-6*.rpm",
+                                                "echo enabling first repo in remi config",
+                                                "sed -i -- '0,/enabled=0/s/enabled=0/enabled=1/' /etc/yum.repos.d/remi.repo",
+                                                "yum install -y ImageMagick ImageMagick-devel",
+                                                "echo End ImageMagick install",
+                                                "echo Install RVM.",
+                                                "gpg --keyserver hkp://keys.gnupg.net --recv-keys 7D2BAF1CF37B13E2069D6956105BD0E739499BDB",
+                                                "curl -L get.rvm.io | bash -s stable",
+                                                "source /etc/profile.d/rvm.sh",
+                                                "rvm install 2.5.3",
+                                                "gem update --system",
+                                                "gem install bundler",
+                                                "yum history"
+                                            ]
                                         ]
-                                      },
-                                      "\""
-                                    ]
-                                  ]
-                                },
-                                "for i in $SSH_KEYS_USR_INPUT; do echo $i >> /home/ec2-user/.ssh/authorized_keys; done",
-                                "yum update -y aws-cfn-bootstrap",
-                                "# Install the AWS CodeDeploy Agent.",
-                                "cd /home/ec2-user/",
-                                {
-                                    "Fn::Sub": [
-                                        "wget https://aws-codedeploy-${AWS::Region}.s3.amazonaws.com/latest/codedeploy-agent.noarch.rpm",
-                                        {}
-                                    ]
-                                },
-                                "yum -y install codedeploy-agent.noarch.rpm",
-                                "# Install pip and python dev libraries.",
-                                "yum install -y python27-devel python27-pip gcc",
-                                "pip install boto3",
-                                "pip install pycrypto",
-                                "pip install --upgrade awscli",
-                                "# Install psql gem native extension dependencies.",
-                                "yum -y install curl",
-                                "yum -y install git",
-                                "yum -y install epel-release",
-                                "yum -y install postgresql-devel",
-                                "yum -y install gcc-c++ make",
-                                "# Install node.js as js runtime environment.",
-                                "mkdir /root/.nvm",
-                                "export NVM_DIR=\"/root/.nvm\"",
-                                "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash",
-                                "[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"",
-                                "[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/bash_completion\"",
-                                "sudo echo 'export NVM_DIR=\"$HOME/.nvm\"' >> /root/.bash_profile",
-                                "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"' >> /root/.bash_profile",
-                                "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/bash_completion\"' >> /root/.bash_profile",
-                                "sudo echo 'export NVM_DIR=\"$HOME/.nvm\"' >> /root/.bashrc",
-                                "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/nvm.sh\"' >> /root/.bashrc",
-                                "sudo echo '[ -s \"$NVM_DIR/nvm.sh\" ] && \\. \"$NVM_DIR/bash_completion\"' >> /root/.bashrc",
-                                "nvm install --lts",
-                                "node --version",
-                                "npm i -g pm2",
-                                "# Install nginx.",
-                                "# yum install -y nginx",
-                                "# sed -i -- 's/80 default_server/81 default_server/' /etc/nginx/nginx.conf",
-                                "# Start ImageMagick install",
-                                "# wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm",
-                                "# rpm -Uvh epel-release-6*.rpm",
-                                "# wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm",
-                                "# rpm -Uvh remi-release-6*.rpm",
-                                "# enabling first repo in remi config",
-                                "sed -i -- \"0,/enabled=0/s/enabled=0/enabled=1/\" /etc/yum.repos.d/remi.repo",
-                                "# yum install -y ImageMagick ImageMagick-devel",
-                                "# End ImageMagick install",
-                                "rm /home/ec2-user/user_data.log",
-                                "echo node_version - $(node -v || echo N/A) >> /home/ec2-user/user_data.log",
-                                "echo npm_version - $(npm -v || echo N/A) >> /home/ec2-user/user_data.log",
-                                "echo nvm_version - $(nvm --version || echo N/A) >> /home/ec2-user/user_data.log",
-                                "echo $(pm2 -v || echo pm2 - N/A\n) >> /home/ec2-user/user_data.log",
-                                "echo $(yum history) >> /home/ec2-user/user_data.log"
-                            ]
+                                    },
+                                    {
+                                        "Ref": "AWS::NoValue"
+                                    }
+                                ]
+                            }
                         ]
+
                     }
                 }
             },
@@ -3032,9 +3163,13 @@
                 "SecurityGroupIngress": [
                     {
                         "CidrIp": "0.0.0.0/0",
-                        "FromPort": 3000,
+                        "FromPort": {
+                            "Fn::FindInMap": ["ProjectEnvMap", { "Ref": "ProjectEnv"}, "AppInstancePort"]
+                        },
                         "IpProtocol": "tcp",
-                        "ToPort": 3000
+                        "ToPort": {
+                            "Fn::FindInMap": ["ProjectEnvMap", { "Ref": "ProjectEnv"}, "AppInstancePort"]
+                        }
                     },
                     {
                         "CidrIp": "0.0.0.0/0",
