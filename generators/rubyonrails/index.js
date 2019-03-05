@@ -112,7 +112,6 @@ class RubyOnRails extends Generator {
     this.fs.copyTpl(
       this.templatePath('.gitignore')
       , this.destinationPath(`${projectDestinationPath}/.gitignore`)
-      , { application_name }
     );
 
     this.fs.copyTpl(

@@ -1,6 +1,5 @@
 'use-strict'
 
-const { execSync } = require('child_process')
 const Generator = require('yeoman-generator')
 
 const handleError = function (err) {
@@ -79,7 +78,6 @@ class Agonb extends Generator {
   default() {
     const { repository_url } = this.answers
 
-    // execSync(`mkdir ${this.projectDestinationPath}`)
     this.spawnCommandSync('git', ['clone', repository_url])
   }
 
