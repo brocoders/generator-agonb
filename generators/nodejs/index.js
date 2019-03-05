@@ -57,7 +57,7 @@ class NodeJs extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath('.gitignore')
+      this.templatePath('.gitignore.example')
       , this.destinationPath(`${this.projectDestinationPath}/.gitignore`)
     );
 
