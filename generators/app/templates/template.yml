@@ -305,6 +305,14 @@
         }
     },
     "Parameters": {
+        "AppImageId": {
+          "Type": "String",
+          "Default": "ami-a0cfeed8",
+          "AllowedValues": [
+              "ami-a0cfeed8",
+              "ami-7172b611"
+          ]
+        },
         "ProjectEnv": {
             "Description": "Core project technology",
             "Type": "String",
@@ -2605,7 +2613,9 @@
                 "IamInstanceProfile": {
                     "Ref": "WebAppInstanceProfile"
                 },
-                "ImageId": "ami-7172b611",
+                "ImageId": {
+                   "Ref": "AppImageId"
+                },
                 "InstanceType": {
                     "Ref": "InstanceType"
                 },
