@@ -1,16 +1,7 @@
 'use-strict';
 
-const { execSync } = require('child_process')
-const Generator = require('yeoman-generator')
-
-const extraCommandsByOs = {
-  mac() {
-    this.spawnCommandSync()
-  }
-  , linux() {
-
-  }
-};
+const { execSync } = require('child_process');
+const Generator = require('yeoman-generator');
 
 class RubyOnRails extends Generator {
   initializing() {
@@ -30,12 +21,18 @@ class RubyOnRails extends Generator {
     ]);
   }
 
+  configuring() {
+    const { database_type } = this.answers;
+
+    this.config.set('database_type', database_type);
+  }
+
   default() {
-    const { projectDestinationPath } = this.options;
-    const { ruby_version, database_type } = this.answers;
+    const projectDestinationPath = this.config.get('project_destination_path');
+    const database_type = this.config.get('database_type');
 
     execSync('/bin/bash --login');
-    execSync(`rvm use ruby-${ruby_version}`);
+    execSync('rvm use ruby-2.5.3');
 
     this.spawnCommandSync(
       'rails'
@@ -58,7 +55,8 @@ class RubyOnRails extends Generator {
   }
 
   writing() {
-    const { projectApplicationName: application_name, projectDestinationPath } = this.options;
+    const application_name = this.config.get('projectApplicationName');
+    const projectDestinationPath = this.config.get('project_destination_path');
 
     this.fs.copyTpl(
       this.templatePath('config/database.yml')
@@ -71,27 +69,6 @@ class RubyOnRails extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath('scripts/install_dependencies')
-      , this.destinationPath(`${projectDestinationPath}/scripts/install_dependencies`)
-      , { application_name }
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('scripts/stop_server')
-      , this.destinationPath(`${projectDestinationPath}/scripts/stop_server`)
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('appspec.yml')
-      , this.destinationPath(`${projectDestinationPath}/appspec.yml`)
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('run.tests.buildspec.yml')
-      , this.destinationPath(`${projectDestinationPath}/run.tests.buildspec.yml`)
-    );
-
-    this.fs.copyTpl(
       this.templatePath('.ruby-gemset')
       , this.destinationPath(`${projectDestinationPath}/.ruby-gemset`)
       , { application_name }
@@ -100,13 +77,13 @@ class RubyOnRails extends Generator {
     this.fs.copyTpl(
       this.templatePath('.env.example')
       , this.destinationPath(`${projectDestinationPath}/.env.example`)
-      , { db_name: application_name }
+      , { application_name }
     );
 
     this.fs.copyTpl(
       this.templatePath('.env.example')
       , this.destinationPath(`${projectDestinationPath}/.env`)
-      , { db_name: application_name }
+      , { application_name }
     );
 
     this.fs.copyTpl(

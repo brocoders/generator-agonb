@@ -6,7 +6,11 @@ files:
 hooks:
   AfterInstall:
     - location: scripts/install_dependencies
-      timeout: 600
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_server
+      timeout: 60
       runas: root
   ApplicationStop:
     - location: scripts/stop_server

@@ -1,17 +1,18 @@
 'use-strict'
 
-const Generator = require('yeoman-generator')
+const Generator = require('yeoman-generator');
+const { execSync } = require('child_process');
 
 const handleError = function (err) {
-  console.log(err.message)
+  this.log(err.message);
 
   if (this.projectDestinationPath) {
-    console.info(`Removing project directory: ${this.projectDestinationPath}...`)
-    this.spawnCommandSync('rm', ['-rf', `./${this.projectDestinationPath}`])
-    console.info('Done')
+    this.log(`Removing project directory: ${this.projectDestinationPath}...`);
+    this.spawnCommandSync('rm', ['-rf', `./${this.projectDestinationPath}`]);
+    this.log('Done');
   }
 
-  process.exit(0)
+  process.exit(0);
 };
 
 class Agonb extends Generator {
@@ -53,46 +54,49 @@ class Agonb extends Generator {
 
   configuring() {
     let projectDestinationPath, projectApplicationName;
-    const { project_technology, database_type, repository_url } = this.answers;
+    const { project_technology, repository_url } = this.answers;
 
     try {
-      [,,, projectDestinationPath] = repository_url.match(/^(https:\/\/github|git@github)\.com(:|\/).+\/(.+)$/)
+      [,,, projectDestinationPath] = repository_url.match(/^(https:\/\/github|git@github)\.com(:|\/).+\/(.+)$/);
 
       projectDestinationPath = projectDestinationPath.replace(/\.git$/, '');
 
-      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-backend-app$/)
+      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-backend-app$/);
     } catch (e) {
-      throw new Error('Error during application directory/name parsing')
+      throw new Error('Error during application directory/name parsing');
     }
 
     if (!projectDestinationPath) throw new Error('Unable to extract project name');
     if (!projectApplicationName) throw new Error('Unable to extract application name');
     if (project_technology === 'nodejs' && /_|[A-Z]/g.test(projectApplicationName)) throw new Error('Ensure that application name will contain only lower case letters and dashes!');
 
-    this.projectDestinationPath = projectDestinationPath
-    this.projectApplicationName = projectApplicationName
+    this.projectDestinationPath = projectDestinationPath;
+    this.projectApplicationName = projectApplicationName;
 
-    this.composeWith(require.resolve(`../${this.answers.project_technology}`), { projectApplicationName, projectDestinationPath, handleError });
+    this.composeWith(require.resolve('../update-scripts'), { handleError });
+    this.composeWith(require.resolve(`../${this.answers.project_technology}`), { handleError });
+
+    this.config.set('repository_url', repository_url);
+    this.config.set('project_destination_path', projectDestinationPath);
+    this.config.set('application_name', projectApplicationName);
+    this.config.set('project_technology', project_technology);
   }
 
   default() {
-    const { repository_url } = this.answers
-
-    this.spawnCommandSync('git', ['clone', repository_url])
+    this.spawnCommandSync('git', ['clone', this.config.get('repository_url')]);
   }
 
-  writing() {
-    const { projectDestinationPath } = this;
-
+  async writing() {
     this.fs.copyTpl(
       this.templatePath('.env.custom')
-      , this.destinationPath(`${projectDestinationPath}/.env.custom`)
+      , this.destinationPath(`${this.config.get('project_destination_path')}/.env.custom`)
     );
   }
 
   end() {
-    console.info('Success')
+    execSync(`mv .yo-rc.json ${this.config.get('project_destination_path')}/.yo-rc.json`);
+    this.log('Success');
   }
 }
 
-module.exports = Agonb
+module.exports = Agonb;
