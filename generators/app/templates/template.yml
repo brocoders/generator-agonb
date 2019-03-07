@@ -307,7 +307,7 @@
     "Parameters": {
         "AppImageId": {
           "Type": "String",
-          "Default": "ami-a0cfeed8",
+          "Default": "ami-7172b611",
           "AllowedValues": [
               "ami-a0cfeed8",
               "ami-7172b611"

@@ -5,10 +5,11 @@ const { execSync } = require('child_process');
 
 const handleError = function (err) {
   this.log(err.message);
+  const projectDestinationPath = this.config.get('project_destination_path');
 
-  if (this.projectDestinationPath) {
-    this.log(`Removing project directory: ${this.projectDestinationPath}...`);
-    this.spawnCommandSync('rm', ['-rf', `./${this.projectDestinationPath}`]);
+  if (projectDestinationPath) {
+    this.log(`Removing project directory: ${projectDestinationPath}...`);
+    this.spawnCommandSync('rm', ['-rf', `./${projectDestinationPath}`]);
     this.log('Done');
   }
 
@@ -16,22 +17,6 @@ const handleError = function (err) {
 };
 
 class Agonb extends Generator {
-  set projectDestinationPath(projectDestinationPath) {
-    this._projectDestinationPath = projectDestinationPath
-  }
-
-  set projectApplicationName(projectApplicationName) {
-    this._projectApplicationName = projectApplicationName
-  }
-
-  get projectDestinationPath() {
-    return this._projectDestinationPath
-  }
-
-  get projectApplicationName() {
-    return this._projectApplicationName
-  }
-
   initializing() {
     this.on('error', handleError.bind(this));
   }
@@ -69,9 +54,6 @@ class Agonb extends Generator {
     if (!projectDestinationPath) throw new Error('Unable to extract project name');
     if (!projectApplicationName) throw new Error('Unable to extract application name');
     if (project_technology === 'nodejs' && /_|[A-Z]/g.test(projectApplicationName)) throw new Error('Ensure that application name will contain only lower case letters and dashes!');
-
-    this.projectDestinationPath = projectDestinationPath;
-    this.projectApplicationName = projectApplicationName;
 
     this.composeWith(require.resolve('../update-scripts'), { handleError });
     this.composeWith(require.resolve(`../${this.answers.project_technology}`), { handleError });

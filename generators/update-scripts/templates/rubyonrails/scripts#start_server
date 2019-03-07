@@ -1,2 +1,7 @@
-#bundle exec rake db:migrate
+#!/bin/bash
+
+# bundle exec rake db:migrate
+source /etc/profile.d/rvm.sh
+cd /home/ec2-user/ruby-on-rails
+
 bundle exec puma -C config/puma_production.rb

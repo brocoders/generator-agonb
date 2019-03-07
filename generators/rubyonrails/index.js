@@ -55,45 +55,44 @@ class RubyOnRails extends Generator {
   }
 
   writing() {
-    const application_name = this.config.get('projectApplicationName');
-    const projectDestinationPath = this.config.get('project_destination_path');
+    const { application_name, project_destination_path } = this.config.getAll();
 
     this.fs.copyTpl(
       this.templatePath('config/database.yml')
-      , this.destinationPath(`${projectDestinationPath}/config/database.yml`)
+      , this.destinationPath(`${project_destination_path}/config/database.yml`)
     );
 
     this.fs.copyTpl(
       this.templatePath('config/puma_production.rb')
-      , this.destinationPath(`${projectDestinationPath}/config/puma_production.rb`)
+      , this.destinationPath(`${project_destination_path}/config/puma_production.rb`)
     );
 
     this.fs.copyTpl(
       this.templatePath('.ruby-gemset')
-      , this.destinationPath(`${projectDestinationPath}/.ruby-gemset`)
+      , this.destinationPath(`${project_destination_path}/.ruby-gemset`)
       , { application_name }
     );
 
     this.fs.copyTpl(
       this.templatePath('.env.example')
-      , this.destinationPath(`${projectDestinationPath}/.env.example`)
+      , this.destinationPath(`${project_destination_path}/.env.example`)
       , { application_name }
     );
 
     this.fs.copyTpl(
       this.templatePath('.env.example')
-      , this.destinationPath(`${projectDestinationPath}/.env`)
+      , this.destinationPath(`${project_destination_path}/.env`)
       , { application_name }
     );
 
     this.fs.copyTpl(
       this.templatePath('.gitignore.example')
-      , this.destinationPath(`${projectDestinationPath}/.gitignore`)
+      , this.destinationPath(`${project_destination_path}/.gitignore`)
     );
 
     this.fs.copyTpl(
       this.templatePath('app/controllers/health_check_controller.rb')
-      , this.destinationPath(`${projectDestinationPath}/app/controllers/health_check_controller.rb`)
+      , this.destinationPath(`${project_destination_path}/app/controllers/health_check_controller.rb`)
     );
   }
 }

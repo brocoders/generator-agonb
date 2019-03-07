@@ -55,7 +55,7 @@ cat .env.custom >> .env
 #curl -sL https://rpm.nodesource.com/setup | bash -
 #yum install -y nodejs
 
-#gem install bundler
+gem install bundler
 bundle install
 
 export SECRET_KEY_BASE="$(bundle exec rake secret)"
