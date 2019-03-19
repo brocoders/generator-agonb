@@ -38,8 +38,8 @@ echo DATABASE_HOST=$db_host >> .env
 echo RAILS_ENV=production >> .env
 echo RAKE_ENV=production >> .env
 echo DEVISE_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a358e160a078390957e5481b069761e8b8c1dcd0489cb0fa2ab302071d878634878161 >> .env
-echo DAEMONIZE_PUMA=true
-echo PORT=80
+echo DAEMONIZE_PUMA=true >> .env
+echo PORT=80 >> .env
 
 echo AWS_ACCESS_KEY_ID=$user_access_key >> .env
 echo AWS_SECRET_ACCESS_KEY=$user_secret_access_key >> .env
@@ -55,7 +55,7 @@ cat .env.custom >> .env
 #curl -sL https://rpm.nodesource.com/setup | bash -
 #yum install -y nodejs
 
-gem install bundler
+gem install bundler -v 1.17.0
 bundle install
 
 export SECRET_KEY_BASE="$(bundle exec rake secret)"

@@ -7,6 +7,8 @@ Yeoman generator for generating AWS deployment configs for back-end application
 * npm
 * yo
 * @nestjs/cli
+* Desirable Ruby version is 2.5.3
+* Gem Bundler version less the 2.0 (It breaks CodeDeploy agent)
 
 ```
 npm i -g yo @nestjs/cli
@@ -17,16 +19,16 @@ npm i -g yo @nestjs/cli
 npm i -g git+ssh://git@github.com:dirtyRuby/generator-agonb.git
 ```
 
-#Description
+# Description
 Generator will initialize basic NestJS application ready for deployment to AWS. 
 It performs next steps:
 * Clone provided repository
-* Initialize NestJS project in folder been created by **git**
+* Initialize project in folder been created by **git**
 * Copy deployment related files
-* Set up health check route (/) for Elastic Load Balancer
+* Set up health check route for Elastic Load Balancer
 
-#Requirements
-Git project should be named <application-name>-back-end-app
+# Requirements
+Git project should have `-backend-app` suffix
 
 # Usage
 ## Run generator
@@ -35,6 +37,7 @@ Generator can be run at any directory with command:
 yo agonb
 ```
 
-It's interactive and will ask for few questions: 
+It's interactive and will ask for few questions:
+* Project technology (Ruby On Rails, NodeJs)
 * Project repository URL (SSH)
 * DataBase client (Default is `postgres`)
