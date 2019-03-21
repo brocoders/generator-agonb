@@ -3,18 +3,7 @@
 const Generator = require('yeoman-generator');
 const { execSync } = require('child_process');
 
-const handleError = function (err) {
-  this.log(err.message);
-  const projectDestinationPath = this.config.get('project_destination_path');
-
-  if (projectDestinationPath) {
-    this.log(`Removing project directory: ${projectDestinationPath}...`);
-    this.spawnCommandSync('rm', ['-rf', `./${projectDestinationPath}`]);
-    this.log('Done');
-  }
-
-  process.exit(0);
-};
+const { handleError } = require('../../helpers');
 
 class Agonb extends Generator {
   initializing() {
@@ -27,7 +16,11 @@ class Agonb extends Generator {
         type: 'list'
         , name: 'project_technology'
         , message: 'Your project technology'
-        , choices: [{ name: 'NodeJs', value: 'nodejs' }, { value: 'rubyonrails', name: "Ruby On Rails" }]
+        , choices: [
+          { name: 'NodeJs', value: 'nodejs' }
+          , { value: 'rubyonrails', name: 'Ruby On Rails' }
+          , { value: 'frontend-deployment', name: 'Frontend Deployment' }
+        ]
       }
       , {
         type: 'input'
@@ -46,7 +39,7 @@ class Agonb extends Generator {
 
       projectDestinationPath = projectDestinationPath.replace(/\.git$/, '');
 
-      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-backend-app$/);
+      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-(back|front)end-app$/);
     } catch (e) {
       throw new Error('Error during application directory/name parsing');
     }
@@ -55,7 +48,7 @@ class Agonb extends Generator {
     if (!projectApplicationName) throw new Error('Unable to extract application name');
     if (project_technology === 'nodejs' && /_|[A-Z]/g.test(projectApplicationName)) throw new Error('Ensure that application name will contain only lower case letters and dashes!');
 
-    this.composeWith(require.resolve('../update-scripts'), { handleError });
+    this.composeWith(require.resolve('../put-scripts'), { handleError });
     this.composeWith(require.resolve(`../${this.answers.project_technology}`), { handleError });
 
     this.config.set('repository_url', repository_url);

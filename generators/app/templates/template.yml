@@ -3352,7 +3352,7 @@
         "AppUrl": {
           "Description": "Application Instance Ip",
           "Value":{
-              "Fn::Sub": "\"backendUrl\": \"https://${SubDomain}.${HostedZone}\""
+              "Fn::Sub": "https://${SubDomain}.${HostedZone}"
           }
         }
     }
