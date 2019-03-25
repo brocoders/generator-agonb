@@ -2,10 +2,10 @@
 
 const Generator = require('yeoman-generator');
 
+const { handleError } = require('../../helpers');
+
 class NodeJs extends Generator {
   initializing() {
-    const { handleError } = this.options;
-
     this.on('error', handleError.bind(this));
   }
 
@@ -40,6 +40,10 @@ class NodeJs extends Generator {
 
     this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/getHello/getHealthCheck/g', '{}', '\;']); // eslint-disable-line no-useless-escape
     this.spawnCommandSync('find', [`./${projectDestinationPath}/src`, '-name', '*.bak', '-type', 'f', '-delete']);
+  }
+
+  end() {
+    this.log('NodeJs app been successfully generated');
   }
 }
 

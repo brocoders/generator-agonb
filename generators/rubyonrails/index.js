@@ -3,10 +3,10 @@
 const { execSync } = require('child_process');
 const Generator = require('yeoman-generator');
 
+const { handleError } = require('../../helpers');
+
 class RubyOnRails extends Generator {
   initializing() {
-    const { handleError } = this.options;
-
     this.on('error', handleError.bind(this));
   }
 
@@ -94,6 +94,10 @@ class RubyOnRails extends Generator {
       this.templatePath('app/controllers/health_check_controller.rb')
       , this.destinationPath(`${project_destination_path}/app/controllers/health_check_controller.rb`)
     );
+  }
+
+  end() {
+    this.log('Ruby On Rails app been successfully generated');
   }
 }
 
