@@ -6,7 +6,7 @@ class UpdateScripts extends Generator {
     const { project_technology } = this.config.getAll();
     let { project_destination_path } = this.config.getAll();
 
-    if (this._initOptions.env.namespace === 'agonb:put-scripts') project_destination_path = '.';
+    if (process.argv.includes('agonb:put-scripts')) project_destination_path = '.';
 
     const scripts = fs.readdirSync(this.templatePath(project_technology));
 
