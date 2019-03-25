@@ -14,6 +14,10 @@ Parameters:
   SlackNotificationsHook:
     Type: String
     Description: Value passed from parent stack params
+  CloudFrontDistributionId:
+    Type: String
+    Default: ""
+    Description: Value passed from parent stack params
 
 Globals:
   Function:
@@ -21,6 +25,7 @@ Globals:
     Environment:
       Variables:
         SLACK_HOOK_URL: !Ref SlackNotificationsHook
+        CLOUD_FRONT_DISTRIBUTION_ID: !Ref CloudFrontDistributionId
 
 Resources:
   WebsiteBucket:
@@ -87,6 +92,10 @@ Resources:
                 Action:
                   - s3:PutObject
                 Resource: !Sub 'arn:aws:s3:::${WebsiteBucket}/*'
+              - Effect: Allow
+                Action:
+                  - cloudfront:CreateInvalidation
+                Resource: '*'
 
   DeploymentCustomResourceLambda:
     Type: AWS::Serverless::Function

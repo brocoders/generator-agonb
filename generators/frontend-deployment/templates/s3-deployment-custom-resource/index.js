@@ -8,7 +8,7 @@ const AdmZip = require('adm-zip');
 const async = require('async');
 const mime = require('mime');
 
-const { SLACK_HOOK_URL } = process.env;
+const { SLACK_HOOK_URL, CLOUD_FRONT_DISTRIBUTION_ID } = process.env;
 
 const statuses = {
   started: 'STARTED'
@@ -254,9 +254,35 @@ exports.handler = (event, context, callback) => {
       });
 
       async.parallel(asyncTasks, (_err, result) => {
-        return _err
-          ? sendCloudFormationResponse(constants.FAILED, { message: `Error while uploading ${result} to destination bucket: ${err}` })
-          : sendCloudFormationResponse(constants.SUCCESS, { message: 'OK' }, physicalResourceId);
+        if (_err) {
+          return sendCloudFormationResponse(constants.FAILED, { message: `Error while uploading ${result} to destination bucket: ${err}` });
+        } else {
+          if (CLOUD_FRONT_DISTRIBUTION_ID) {
+            // const invalidateCloudFront = function() {
+            const cloudfront = new AWS.CloudFront();
+            const params = {
+              DistributionId: CLOUD_FRONT_DISTRIBUTION_ID
+              , InvalidationBatch: {
+                CallerReference: Date.now().toString()
+                , Paths: {
+                  Quantity: 1
+                  , Items: [
+                    '/*'
+                  ]
+                }
+              }
+            };
+
+            cloudfront.createInvalidation(params, (_err, data) => {
+              if (_err) sendCloudFormationResponse(constants.FAILED, { message: `Error while uploading ${result} to destination bucket: ${_err}` });
+
+              sendCloudFormationResponse(constants.SUCCESS, { message: 'OK' }, physicalResourceId);
+            });
+
+            return;
+          }
+          sendCloudFormationResponse(constants.SUCCESS, { message: 'OK' }, physicalResourceId);
+        }
       });
     });
 
