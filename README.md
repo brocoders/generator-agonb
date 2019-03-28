@@ -41,3 +41,34 @@ It's interactive and will ask for few questions:
 * Project technology (Ruby On Rails, NodeJs)
 * Project repository URL (SSH)
 * DataBase client (Default is `postgres`)
+
+### Put Scripts
+The purpose of this sub generator is to put aws deployment related scripts to project.
+
+Working directory must be directory of a project and contain `.yo-rc.json`
+```
+yo agonb:put-scripts
+```
+`.yo-rc.json` will contain information about:
+- which type of scripts to put (NodeJs, RubyOnRails...)
+- which values to put in template
+
+Normally `.yo-rc.json` is crated on project initialization:
+```
+yo agonb
+```
+
+#### Front End Deployment example
+.yo-rc.json
+```
+{
+  "generator-agonb": {
+    "repository_url": "git@github.com:brocoders/geniepad-frontend-app.git",
+    "project_destination_path": "geniepad-frontend-app",
+    "application_name": "geniepadFrontEnd",
+    "project_technology": "frontend-deployment",
+    "api_url": " https://geniepad.brocoders.xyz"
+  }
+}
+
+```
