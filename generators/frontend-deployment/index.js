@@ -39,19 +39,6 @@ class FrontEndDeployment extends Generator {
       this.templatePath('.gitignore.example')
       , this.destinationPath(`${this.config.get('project_destination_path')}/.gitignore`)
     );
-
-    this.fs.copyTpl(
-      this.templatePath('s3-deployment-custom-resource/index.js')
-      , this.destinationPath(`${this.config.get('project_destination_path')}/s3-deployment-custom-resource/index.js`)
-      , {
-        app_name: this.config.get('application_name')
-      }
-    );
-
-    this.fs.copyTpl(
-      this.templatePath('s3-deployment-custom-resource/package.json')
-      , this.destinationPath(`${this.config.get('project_destination_path')}/s3-deployment-custom-resource/package.json`)
-    );
   }
 
   end() {
