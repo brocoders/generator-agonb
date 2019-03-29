@@ -16,7 +16,7 @@ npm i -g yo @nestjs/cli
 
 # Installation
 ```
-npm i -g git+ssh://git@github.com:dirtyRuby/generator-agonb.git
+npm i -g git+ssh://git@github.com:brocoders/generator-agonb.git
 ```
 
 # Description
