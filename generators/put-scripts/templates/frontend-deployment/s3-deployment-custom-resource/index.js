@@ -68,7 +68,7 @@ exports.notify_slack_of_pipeline_changes = (event, context) => {
 
   const { detail: { stage, state, pipeline }, region } = event;
 
-  const project = `<%= app_name %>_${stage.toLowerCase()}_build`;
+  const project = `<%= application_name %>_${stage.toLowerCase()}_build`;
   const log_link = `https://console.aws.amazon.com/cloudwatch/home?region=${region}#logEventViewer:group=/aws/codebuild/${project};start=P1D`;
   const log_button = {
     fallback: `View build logs ${log_link}`
