@@ -3,7 +3,6 @@ cd /home/ec2-user/ruby-on-rails
 mkdir -p log
 
 source /etc/profile.d/rvm.sh
-gem install bundler
 rvm list
 rvm gemset list
 gem list
@@ -56,6 +55,6 @@ cat .env.custom >> .env
 #yum install -y nodejs
 
 gem install bundler -v 1.17.0
-bundle install
+bundle install --without development test
 
 export SECRET_KEY_BASE="$(bundle exec rake secret)"
