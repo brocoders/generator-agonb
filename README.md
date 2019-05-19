@@ -2,21 +2,30 @@
 
 Yeoman generator for generating AWS deployment configs for back-end application
 
-# Prerequisites
+# Common Prerequisites
 * Nodejs >= 8.10
 * npm
+* yarn
 * yo
-* @nestjs/cli
-* Desirable Ruby version is 2.5.3
-* Gem Bundler version less the 2.0 (It breaks CodeDeploy agent)
 
+# Nest.js Prerequisites
+* @nestjs/cli ()
 ```
 npm i -g yo @nestjs/cli
 ```
 
+# Rails Prerequisites
+* Desirable Ruby version is 2.5.3
+* Gem Bundler version less the 2.0 (It breaks CodeDeploy agent)
+
+
 # Installation
 ```
 npm i -g git+ssh://git@github.com:brocoders/generator-agonb.git
+```
+or 
+```
+yarn global add git+ssh://git@github.com:brocoders/generator-agonb.git
 ```
 
 # Description
@@ -42,7 +51,7 @@ It's interactive and will ask for few questions:
 * Project repository URL (SSH)
 * DataBase client (Default is `postgres`)
 
-### Put Scripts
+### Applying to existing repo without clonning
 The purpose of this sub generator is to put aws deployment related scripts to project.
 
 Working directory must be directory of a project and contain `.yo-rc.json`
