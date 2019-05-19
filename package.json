@@ -1,6 +1,6 @@
 {
   "name": "generator-agonb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AWS deployment configuration generator for nodejs app.",
   "engines": {
     "node": ">=8.10",
