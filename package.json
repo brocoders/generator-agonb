@@ -14,15 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dirtyRuby/generator-agonb.git"
+    "url": "git+https://github.com/brocoders/generator-agonb.git"
   },
   "keywords": "yeoman-generator",
   "author": "Artem Stupachenko",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dirtyRuby/aws-ops-node-generator/issues"
+    "url": "https://github.com/brocoders/aws-ops-node-generator/issues"
   },
-  "homepage": "https://github.com/dirtyRuby/aws-ops-node-generator#readme",
+  "homepage": "https://github.com/brocoders/aws-ops-node-generator#readme",
   "dependencies": {
     "yeoman-generator": "^3.2.0"
   },
