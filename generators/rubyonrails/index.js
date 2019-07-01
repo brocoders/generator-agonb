@@ -55,7 +55,14 @@ class RubyOnRails extends Generator {
   }
 
   writing() {
-    const { application_name, project_destination_path } = this.config.getAll();
+    const { application_name, project_destination_path, use_worker } = this.config.getAll();
+
+    if (use_worker) {
+      this.fs.copyTpl(
+        this.templatePath('config/sidekiq.yml')
+        , this.destinationPath(`${project_destination_path}/config/sidekiq.yml`)
+      );
+    }
 
     this.fs.copyTpl(
       this.templatePath('config/database.yml')

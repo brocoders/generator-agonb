@@ -2,6 +2,11 @@ route "scope :api do resources :health_check, only: [:index] end"
 
 environment 'config.logger = Logger.new(STDOUT)'
 
+if <%= use_worker =>
+    environment 'config.active_job.queue_adapter = :sidekiq'
+    gem 'sidekiq'
+end
+
 initializer 'carrierwave.rb', <<-CODE
   require 'carrierwave/storage/fog'
 

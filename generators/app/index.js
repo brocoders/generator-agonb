@@ -26,13 +26,25 @@ class Agonb extends Generator {
         type: 'input'
         , name: 'repository_url'
         , message: 'Your project repository url'
+      }, {
+        type: 'list'
+        , name: 'use_worker'
+        , message: 'Do you need worker instance?'
+        , choices: [
+          {
+            name: 'Yes', value: true
+          }
+          , {
+            name: 'No', value: false
+          }
+        ]
       }
     ]);
   }
 
   configuring() {
     let projectDestinationPath, projectApplicationName;
-    const { project_technology, repository_url } = this.answers;
+    const { project_technology, repository_url, use_worker } = this.answers;
 
     try {
       [,,, projectDestinationPath] = repository_url.match(/^(https:\/\/github|git@github)\.com(:|\/).+\/(.+)$/);
@@ -55,6 +67,7 @@ class Agonb extends Generator {
     this.config.set('project_destination_path', projectDestinationPath);
     this.config.set('application_name', projectApplicationName);
     this.config.set('project_technology', project_technology);
+    this.config.set('use_worker', use_worker);
   }
 
   default() {
