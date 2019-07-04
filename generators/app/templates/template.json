@@ -1205,6 +1205,22 @@
                         "SourceSecurityGroupId": {
                             "Ref": "WebAppSG"
                         }
+                    },
+                    {
+                        "Fn::If": [
+                            "CreateWorkerInstance",
+                            {
+                                "IpProtocol": "tcp",
+                                "FromPort": "5432",
+                                "ToPort": "5432",
+                                "SourceSecurityGroupId": {
+                                    "Ref": "WorkerSG"
+                                }
+                            },
+                            {
+                                "Ref": "AWS::NoValue"
+                            }
+                        ]
                     }
                 ],
                 "VpcId": {
@@ -2943,6 +2959,7 @@
             }
         },
         "WorkerApp": {
+            "Condition": "CreateWorkerInstance",
             "Type": "AWS::EC2::Instance",
             "Properties": {
                 "IamInstanceProfile": {
@@ -3085,7 +3102,7 @@
                                 "gem update --system",
                                 "gem install bundler",
                                 "yum -y install redis",
-                                "sed -i s/bind 127.0.0.1/bind 0.0.0.0/g /etc/redis.conf",
+                                "sed -i 's/bind 127.0.0.1/bind 0.0.0.0/g' /etc/redis.conf",
                                 "sed -i -- '0,/daemonize no/s/daemonize no/daemonize yes/' /etc/redis.conf",
                                 "yum history"
                             ]
@@ -3095,6 +3112,7 @@
             }
         },
         "WorkerAppIpSSM": {
+            "Condition": "CreateWorkerInstance",
             "Type": "AWS::SSM::Parameter",
             "DependsOn": "WorkerApp",
             "Properties": {
