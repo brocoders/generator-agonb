@@ -3136,6 +3136,7 @@
             }
         },
         "WorkerDeploymentGroup": {
+            "Condition": "CreateWorkerInstance",
             "Type": "AWS::CodeDeploy::DeploymentGroup",
             "DependsOn": [
                 "WorkerApp"
@@ -3493,6 +3494,7 @@
             }
         },
         "WorkerSG": {
+            "Condition": "CreateWorkerInstance",
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
                 "GroupDescription": "Enable HTTP access via port 80 and SSH access via port 22.",
