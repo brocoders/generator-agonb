@@ -51,5 +51,5 @@ echo SECRET_ACCESS_KEY=$user_secret_access_key >> production.env
 echo Copy project specific variables to production.env
 cat .env.custom >> production.env
 
-npm run prestart:prod
+npm run build
 pm2 start npm --no-automation --name <%= application_name %> -- run start:prod
