@@ -3639,7 +3639,7 @@
                                 "Fn::Sub": "\"slackHookUrl\": \"${SlackNotificationsHook}\""
                             },
                             {
-                                "Fn::Sub": "\"actionStageMap\": [{ \"stages\": [\"Source\", \"ApplicationSource\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"SUCCEEDED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"FAILED\"], \"options\": { \"codeBuildProject\": \"${TestCodeBuildProject}\" } }, { \"stages\": [\"Application\", \"Deploy\", \"SUCCEEDED\"] }]"
+                                "Fn::Sub": "\"actionStageMap\": [{ \"stages\": [\"Source\", \"ApplicationSource\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"STARTED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"SUCCEEDED\"] }, { \"stages\": [\"Build\", \"CodeBuild\", \"FAILED\"], \"options\": { \"codeBuildProject\": \"${TestCodeBuildProject}\" } }, { \"stages\": [\"Application\", \"Deploy\", \"SUCCEEDED\"] }, { \"stages\": [\"Application\", \"DeployWorker\", \"SUCCEEDED\"] }, { \"stages\": [\"Application\", \"DeployWorker\", \"FAILED\"] }]"
                             },
                             {
                                 "Fn::Sub": "\"projectId\": \"${ProjectId}\"}"
