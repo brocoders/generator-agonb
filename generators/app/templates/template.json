@@ -2845,6 +2845,7 @@
                                         "nvm install --lts",
                                         "node --version",
                                         "npm i -g pm2",
+                                        "pm2 startup",
                                         "# Install nginx.",
                                         "# yum install -y nginx",
                                         "# sed -i -- 's/80 default_server/81 default_server/' /etc/nginx/nginx.conf",
