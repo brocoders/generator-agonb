@@ -3,7 +3,7 @@
 Yeoman generator for generating AWS deployment configs for back-end application
 
 # Common Prerequisites
-* Nodejs >= 8.10
+* Nodejs >= 10.x
 * npm
 * yarn
 * yo

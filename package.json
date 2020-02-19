@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "description": "AWS deployment configuration generator for nodejs app.",
   "engines": {
-    "node": ">=8.10",
+    "node": ">=10",
     "npm": ">= 6.4.1"
   },
   "files": [
