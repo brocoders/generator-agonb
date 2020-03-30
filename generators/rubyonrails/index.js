@@ -3,7 +3,7 @@
 const { execSync } = require('child_process');
 const Generator = require('yeoman-generator');
 
-const { handleError } = require('../../helpers');
+const { handleError } = require('../helpers');
 
 class RubyOnRails extends Generator {
   initializing() {

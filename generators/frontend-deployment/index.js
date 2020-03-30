@@ -2,7 +2,7 @@
 
 const Generator = require('yeoman-generator');
 
-const { handleError } = require('../../helpers');
+const { handleError } = require('../helpers');
 
 class FrontEndDeployment extends Generator {
   initializing() {

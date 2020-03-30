@@ -3,7 +3,7 @@
 const Generator = require('yeoman-generator');
 const { execSync } = require('child_process');
 
-const { handleError } = require('../../helpers');
+const { handleError } = require('../helpers');
 
 class Agonb extends Generator {
   initializing() {

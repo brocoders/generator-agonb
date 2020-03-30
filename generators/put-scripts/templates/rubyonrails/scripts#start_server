@@ -1,9 +1,10 @@
 #!/bin/bash
 
+. ~/.nvm/nvm.sh # for assets, maybe ruby active admin
 source /etc/profile.d/rvm.sh
 cd /home/ec2-user/ruby-on-rails
 
-if [[ $DEPLOYMENT_GROUP_NAME = *"-EnvWebApp"* ]]
+if [[ $DEPLOYMENT_GROUP_NAME = *"-WebApp"* ]]
 then
     bundle exec puma -C config/puma_production.rb
 fi
