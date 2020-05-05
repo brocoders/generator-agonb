@@ -1,0 +1,24 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - yarn install
+      - yarn add mocha mochawesome mochawesome-merge mochawesome-report-generator
+      # never change this line
+      - export CYPRESS_BASE_URL=$RELEASE_URL
+      - # setup env
+  pre_build:
+    commands:
+      - rm -R -f report && mkdir report
+  build:
+    commands:
+      # available firefox, chromium, electron
+      - yarn cypress run --headless --browser firefox
+  post_build:
+    commands:
+      # never change this post_build block
+      - node mergeReports.js
+      - yarn marge ./report/mochawesome-report/report.json -f index -o report
+      - aws s3 cp --acl $REPORT_ACL --recursive ./report s3://$BUILD_OUTPUT_BUCKET/report-$REPORT_UUID

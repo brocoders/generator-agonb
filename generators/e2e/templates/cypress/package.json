@@ -1,0 +1,19 @@
+{
+  "name": "cypress-ci-template",
+  "version": "1.0.0",
+  "description": "Template for cypress with AWS CodeBuild and S3 integration",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "cy:dev": "yarn cypress open",
+    "cy:dev:debug": "DEBUG=cypress:* yarn cypress open",
+    "cy:ci": "sh ./example-run.sh"
+  },
+  "devDependencies": {
+    "cypress": "^4.4.1",
+    "cypress-localstorage-commands": "^1.1.8",
+    "cypress-multi-reporters": "^1.2.4",
+    "cypress-terminal-report": "^1.2.1"
+  }
+}

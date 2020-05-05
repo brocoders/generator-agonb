@@ -1,0 +1,20 @@
+{
+  "baseUrl": "http://localhost:3000/",
+  "watchForFileChanges": false,
+  "restartBrowserBetweenSpecFiles": true,
+  "screenshotsFolder": "report/screenshots",
+  "videosFolder": "report/videos",
+  "reporter": "cypress-multi-reporters",
+  "reporterOptions": {
+    "reporterEnabled": "mochawesome",
+    "mochawesomeReporterOptions": {
+      "reportDir": "report/mochawesome-report",
+      "quite": true,
+      "overwrite": false,
+      "html": false,
+      "json": true,
+      "timestamp": "mmddyyyy_HHMMss"
+    }
+  }
+
+}
