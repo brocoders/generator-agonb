@@ -2,33 +2,28 @@
 cd /home/ec2-user/node-js-app
 mkdir -p log
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. ~/.nvm/nvm.sh
 
 npm i -g @nestjs/cli typescript ts-node
 npm i
 
-db_name=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-db-name  --with-decryption --query Parameters[0].Value)
-db_name=`echo $db_name | sed -e 's/^"//' -e 's/"$//'`
+app_name='<%= application_name %>'
+database_type='<%= database_type %>'
+app_region='us-west-2'
 
-db_user=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-db-user  --with-decryption --query Parameters[0].Value)
-db_user=`echo $db_user | sed -e 's/^"//' -e 's/"$//'`
+get_ssm_param() {
+    param_name=$1
+    value=$(aws ssm get-parameters --region ${app_region} --names ${app_name}-${param_name} --with-decryption --query Parameters[0].Value)
+    echo $value | sed -e 's/^"//' -e 's/"$//'
+}
 
-db_password=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-db-password  --with-decryption --query Parameters[0].Value)
-db_password=`echo $db_password | sed -e 's/^"//' -e 's/"$//'`
-
-db_host=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-db-host  --with-decryption --query Parameters[0].Value)
-db_host=`echo $db_host | sed -e 's/^"//' -e 's/"$//'`
-
-#carier_wave_s3_bucket=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-CarierWaveS3BucketNameSSM  --with-decryption --query Parameters[0].Value)
-#carier_wave_s3_bucket=`echo $carier_wave_s3_bucket | sed -e 's/^"//' -e 's/"$//'`
-
-user_access_key=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-IAMStackUserAccessKeySSM  --with-decryption --query Parameters[0].Value)
-user_access_key=`echo $user_access_key | sed -e 's/^"//' -e 's/"$//'`
-
-user_secret_access_key=$(aws ssm get-parameters --region us-west-2 --names <%= application_name %>-IAMStackUserSecretAccessKeySSM  --with-decryption --query Parameters[0].Value)
-user_secret_access_key=`echo $user_secret_access_key | sed -e 's/^"//' -e 's/"$//'`
+db_name=$(get_ssm_param "db-name")
+db_user=$(get_ssm_param "db-user")
+db_password=$(get_ssm_param "db-password")
+db_host=$(get_ssm_param "db-host")
+carier_wave_s3_bucket=$(get_ssm_param "CarierWaveS3BucketNameSSM")
+user_access_key=$(get_ssm_param "IAMStackUserAccessKeySSM")
+user_secret_access_key=$(get_ssm_param "IAMStackUserSecretAccessKeySSM")
 
 [ -f production.env ] && rm production.env || echo production.env is not exists yet
 
@@ -43,7 +38,7 @@ echo AUTH_JWT_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a
 echo API_PREFIX=api/v1 >> production.env
 echo AUTH_JWT_TOKEN_EXPIRES_IN=3600 >> production.env
 echo DATABASE_PORT=5432 >> production.env
-echo DATABASE_TYPE=<%= database_type %> >> production.env
+echo DATABASE_TYPE=$database_type >> production.env
 echo ACCESS_KEY_ID=$user_access_key >> production.env
 echo SECRET_ACCESS_KEY=$user_secret_access_key >> production.env
 
@@ -52,4 +47,4 @@ echo Copy project specific variables to production.env
 cat .env.custom >> production.env
 
 npm run build
-pm2 start npm --no-automation --name <%= application_name %> -- run start:prod
+pm2 start npm --no-automation --name $app_name -- run start:prod
