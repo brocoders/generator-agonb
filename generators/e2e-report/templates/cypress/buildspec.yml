@@ -15,7 +15,7 @@ phases:
   build:
     commands:
       # available firefox, chromium, electron
-      - yarn cypress run --headless --browser firefox
+      - yarn cypress run --headless --browser electron
   post_build:
     commands:
       # never change this post_build block
