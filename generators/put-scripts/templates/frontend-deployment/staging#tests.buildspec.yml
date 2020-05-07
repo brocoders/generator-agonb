@@ -1,7 +1,9 @@
-version: 0.1
+version: 0.2
 
 phases:
   install:
+    runtime-version:
+      nodejs: 12.x
     commands:
       - cd $CODEBUILD_SRC_DIR; npm install aws-sdk --save
       - npm i
