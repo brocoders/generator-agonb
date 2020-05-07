@@ -5,6 +5,8 @@ const Generator = require('yeoman-generator');
 
 const { handleError } = require('../helpers');
 
+const RUBY_VERSION = '2.6.6';
+
 class RubyOnRails extends Generator {
   initializing() {
     this.on('error', handleError.bind(this));
@@ -32,7 +34,7 @@ class RubyOnRails extends Generator {
     const database_type = this.config.get('database_type');
 
     execSync('/bin/bash --login');
-    execSync('rvm use ruby-2.5.3');
+    execSync(`rvm use ruby-${RUBY_VERSION}`);
 
     this.spawnCommandSync(
       'rails'
