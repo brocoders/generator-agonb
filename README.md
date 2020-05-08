@@ -125,6 +125,7 @@ It's interactive and will ask for few questions:
 
 
 ### <a id="e2e-apply-exists-cypress"></a> Applying to existing Cypress project
+Create file  
 .yo-rc.json
 ```
 {
@@ -132,4 +133,9 @@ It's interactive and will ask for few questions:
     "e2eType": "cypress"
   }
 }
+```
+
+Run command:  
+```bash
+yo agonb:e2e-report
 ```
