@@ -49,8 +49,27 @@ class RubyOnRails extends Generator {
   }
 
   default() {
+    const {
+      project_destination_path,
+      database_type,
+      use_worker = false,
+    } = this.config.getAll();
+    const templateEnv = `ENABLE_WORKER=${use_worker}`;
+
     execSync('/bin/bash --login');
     execSync(`rvm use ruby-${RUBY_VERSION}`);
+
+    execSync(`${templateEnv} rails new ${project_destination_path} \
+    --database=${database_type} \
+    --api \
+    --skip-yarn \
+    --skip-coffee \
+    --skip-javascript \
+    --skip-bundle \
+    --skip-turbolinks \
+    --skip-test \
+    --skip \
+    --template=${this.templatePath('template.rb')}`);
   }
 
   async writing() {
@@ -59,8 +78,6 @@ class RubyOnRails extends Generator {
       project_destination_path,
       use_worker = false,
     } = this.config.getAll();
-
-    this._makeRailsProjectFromTemplate();
 
     if (use_worker) {
       this.fs.copyTpl(
@@ -105,26 +122,6 @@ class RubyOnRails extends Generator {
 
   end() {
     this.log('Ruby On Rails app been successfully generated');
-  }
-
-  _makeRailsProjectFromTemplate() {
-    const {
-      project_destination_path,
-      database_type,
-      use_worker = false,
-    } = this.config.getAll();
-    const templateEnv = `ENABLE_WORKER=${use_worker}`;
-    execSync(`${templateEnv} rails new ${project_destination_path} \
-    --database=${database_type} \
-    --api \
-    --skip-yarn \
-    --skip-coffee \
-    --skip-javascript \
-    --skip-bundle \
-    --skip-turbolinks \
-    --skip-test \
-    --skip \
-    --template=${this.templatePath('template.rb')}`);
   }
 }
 
