@@ -2,7 +2,7 @@ route "scope :api do resources :health_check, only: [:index] end"
 
 environment 'config.logger = Logger.new(STDOUT)'
 
-if <%= use_worker %>
+if ENV['ENABLE_WORKER'] == 'true'
     environment 'config.active_job.queue_adapter = :sidekiq'
     gem 'sidekiq'
 end

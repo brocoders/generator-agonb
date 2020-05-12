@@ -29,6 +29,7 @@ class Agonb extends Generator {
       }, {
         type: 'list'
         , name: 'use_worker'
+        , when: ({ project_technology }) => ['nodejs', 'rubyonrails'].includes(project_technology)
         , message: 'Do you need worker instance?'
         , choices: [
           {
@@ -43,8 +44,13 @@ class Agonb extends Generator {
   }
 
   configuring() {
-    let projectDestinationPath, projectApplicationName;
-    const { project_technology, repository_url, use_worker } = this.answers;
+    let projectDestinationPath;
+    let projectApplicationName;
+    const {
+      project_technology,
+      repository_url,
+      use_worker = false,
+    } = this.answers;
 
     try {
       [,,, projectDestinationPath] = repository_url.match(/^(https:\/\/github|git@github)\.com(:|\/).+\/(.+)$/);

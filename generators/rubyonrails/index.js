@@ -5,11 +5,30 @@ const Generator = require('yeoman-generator');
 
 const { handleError } = require('../helpers');
 
-const RUBY_VERSION = '2.6.6';
+const RUBY_MAJOR = 2;
+const RUBY_MINOR = 6;
+const RUBY_PATCH = 6;
+const RUBY_VERSION = `${RUBY_MAJOR}.${RUBY_MINOR}.${RUBY_PATCH}`;
+const RUBY_INSTALL_CMD = `rvm install ruby-${RUBY_VERSION}`;
 
 class RubyOnRails extends Generator {
   initializing() {
     this.on('error', handleError.bind(this));
+
+    const currentInstalledRuby = execSync('rvm current');
+    const [ major, minor, patch ] = currentInstalledRuby
+      .toString()
+      .split('-')[1]
+      .split('.')
+      .map(str => parseInt(str, 10));
+    const isRequiredVersion = RUBY_MAJOR === major
+      && RUBY_MINOR === minor
+      && RUBY_PATCH === patch;
+
+    if (isRequiredVersion === false) {
+      throw new Error(`Generator require only ${RUBY_VERSION}.
+      Install ruby ${RUBY_INSTALL_CMD}`);
+    }
   }
 
   async prompting() {
@@ -30,34 +49,18 @@ class RubyOnRails extends Generator {
   }
 
   default() {
-    const projectDestinationPath = this.config.get('project_destination_path');
-    const database_type = this.config.get('database_type');
-
     execSync('/bin/bash --login');
     execSync(`rvm use ruby-${RUBY_VERSION}`);
-
-    this.spawnCommandSync(
-      'rails'
-      , [
-        'new'
-        , projectDestinationPath
-        , `--database=${database_type}`
-        , '--api'
-        , '--skip-git'
-        , '--skip-yarn'
-        , '--skip-coffee'
-        , '--skip-javascript'
-        , '--skip-bundle'
-        , '--skip-turbolinks'
-        , '--skip-test'
-        , '--skip'
-        , `--template=${this.templatePath('template.rb')}`
-      ]
-    );
   }
 
-  writing() {
-    const { application_name, project_destination_path, use_worker } = this.config.getAll();
+  async writing() {
+    const {
+      application_name,
+      project_destination_path,
+      use_worker = false,
+    } = this.config.getAll();
+
+    this._makeRailsProjectFromTemplate();
 
     if (use_worker) {
       this.fs.copyTpl(
@@ -95,11 +98,6 @@ class RubyOnRails extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath('.gitignore.example')
-      , this.destinationPath(`${project_destination_path}/.gitignore`)
-    );
-
-    this.fs.copyTpl(
       this.templatePath('app/controllers/health_check_controller.rb')
       , this.destinationPath(`${project_destination_path}/app/controllers/health_check_controller.rb`)
     );
@@ -107,6 +105,26 @@ class RubyOnRails extends Generator {
 
   end() {
     this.log('Ruby On Rails app been successfully generated');
+  }
+
+  _makeRailsProjectFromTemplate() {
+    const {
+      project_destination_path,
+      database_type,
+      use_worker = false,
+    } = this.config.getAll();
+    const templateEnv = `ENABLE_WORKER=${use_worker}`;
+    execSync(`${templateEnv} rails new ${project_destination_path} \
+    --database=${database_type} \
+    --api \
+    --skip-yarn \
+    --skip-coffee \
+    --skip-javascript \
+    --skip-bundle \
+    --skip-turbolinks \
+    --skip-test \
+    --skip \
+    --template=${this.templatePath('template.rb')}`);
   }
 }
 
