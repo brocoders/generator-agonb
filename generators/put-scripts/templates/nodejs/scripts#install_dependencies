@@ -13,17 +13,23 @@ app_region='us-west-2'
 
 get_ssm_param() {
     param_name=$1
-    value=$(aws ssm get-parameters --region ${app_region} --names ${app_name}-${param_name} --with-decryption --query Parameters[0].Value)
-    echo $value | sed -e 's/^"//' -e 's/"$//'
+    echo $(aws ssm get-parameter \
+        --region ${app_region} \
+        --name /${app_name}/${param_name} \
+        --with-decryption \
+        --query Parameter.Value \
+        --output text
+    )
 }
 
-db_name=$(get_ssm_param "db-name")
-db_user=$(get_ssm_param "db-user")
-db_password=$(get_ssm_param "db-password")
-db_host=$(get_ssm_param "db-host")
-carier_wave_s3_bucket=$(get_ssm_param "CarierWaveS3BucketNameSSM")
-user_access_key=$(get_ssm_param "IAMStackUserAccessKeySSM")
-user_secret_access_key=$(get_ssm_param "IAMStackUserSecretAccessKeySSM")
+db_name=$(get_ssm_param "db/name")
+db_user=$(get_ssm_param "db/user")
+db_password=$(get_ssm_param "db/password")
+db_host=$(get_ssm_param "db/host")
+s3_name=$(get_ssm_param "s3/name")
+s3_base_url=$(get_ssm_param "s3/domain")
+user_access_key_id=$(get_ssm_param "iam/access-key-id")
+user_secret_access_key=$(get_ssm_param "iam/secret-access-key")
 
 [ -f production.env ] && rm production.env || echo production.env is not exists yet
 
@@ -39,9 +45,11 @@ echo API_PREFIX=api/v1 >> production.env
 echo AUTH_JWT_TOKEN_EXPIRES_IN=3600 >> production.env
 echo DATABASE_PORT=5432 >> production.env
 echo DATABASE_TYPE=$database_type >> production.env
-echo ACCESS_KEY_ID=$user_access_key >> production.env
+echo ACCESS_KEY_ID=$user_access_key_id >> production.env
 echo SECRET_ACCESS_KEY=$user_secret_access_key >> production.env
-
+echo AWS_DEFAULT_S3_BUCKET=$s3_name >> .env
+echo AWS_DEFAULT_S3_URL=$s3_base_url >> .env
+echo AWS_S3_REGION=$app_region >> .env
 
 echo Copy project specific variables to production.env
 cat .env.custom >> production.env
