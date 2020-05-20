@@ -29,7 +29,7 @@ npm i -g yo @nestjs/cli
 ```
 
 ### <a id="rails-prerequisites"></a> Rails Prerequisites
-* Desirable Ruby version is 2.5.3
+* Desirable Ruby version is 2.6.6
 * Gem Bundler version less the 2.0 (It breaks CodeDeploy agent)
 
 
