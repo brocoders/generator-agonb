@@ -14,17 +14,23 @@ worker_is_enabled=<%= use_worker %>
 
 get_ssm_param() {
     param_name=$1
-    value=$(aws ssm get-parameters --region ${app_region} --names ${app_name}-${param_name} --with-decryption --query Parameters[0].Value)
-    echo $value | sed -e 's/^"//' -e 's/"$//'
+    echo $(aws ssm get-parameter \
+        --region ${app_region} \
+        --name /${app_name}/${param_name} \
+        --with-decryption \
+        --query Parameter.Value \
+        --output text
+    )
 }
 
-db_name=$(get_ssm_param "db-name")
-db_user=$(get_ssm_param "db-user")
-db_password=$(get_ssm_param "db-password")
-db_host=$(get_ssm_param "db-host")
-carier_wave_s3_bucket=$(get_ssm_param "CarierWaveS3BucketNameSSM")
-user_access_key=$(get_ssm_param "IAMStackUserAccessKeySSM")
-user_secret_access_key=$(get_ssm_param "IAMStackUserSecretAccessKeySSM")
+db_name=$(get_ssm_param "db/name")
+db_user=$(get_ssm_param "db/user")
+db_password=$(get_ssm_param "db/password")
+db_host=$(get_ssm_param "db/host")
+s3_name=$(get_ssm_param "s3/name")
+s3_base_url=$(get_ssm_param "s3/domain")
+user_access_key_id=$(get_ssm_param "iam/access-key-id")
+user_secret_access_key=$(get_ssm_param "iam/secret-access-key")
 
 [ -f .env ] && rm .env || echo .env is not exists yet
 
@@ -37,9 +43,10 @@ echo RAKE_ENV=production >> .env
 echo DEVISE_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a358e160a078390957e5481b069761e8b8c1dcd0489cb0fa2ab302071d878634878161 >> .env
 echo DAEMONIZE_PUMA=true >> .env
 echo PORT=80 >> .env
-echo AWS_ACCESS_KEY_ID=$user_access_key >> .env
+echo AWS_ACCESS_KEY_ID=$user_access_key_id >> .env
 echo AWS_SECRET_ACCESS_KEY=$user_secret_access_key >> .env
-echo AWS_DEFAULT_S3_BUCKET=$carier_wave_s3_bucket >> .env
+echo AWS_DEFAULT_S3_BUCKET=$s3_name >> .env
+echo AWS_DEFAULT_S3_URL=$s3_base_url >> .env
 echo AWS_S3_REGION=$app_region >> .env
 
 if [[ $DEPLOYMENT_GROUP_NAME = *"-WebApp"* ]] && [[ $worker_is_enabled = true ]]
