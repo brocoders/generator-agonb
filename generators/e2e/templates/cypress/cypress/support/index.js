@@ -13,12 +13,15 @@ Cypress.on('test:after:run', (test, runnable) => {
       item = item.parent;
     }
 
+    // this is how cypress joins the test title fragments
     const fullTestName = nameParts
       .filter(Boolean)
-      .join(' -- ');        // this is how cypress joins the test title fragments
+      .join(' -- ');
 
     const imageUrl = `screenshots/${Cypress.spec.name}/${fullTestName} (failed).png`;
+    const videoUrl = `videos/${Cypress.spec.name}.mp4`;
 
     addContext({ test }, imageUrl);
+    addContext({ test }, videoUrl);
   }
 });
