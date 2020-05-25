@@ -10,6 +10,8 @@ npm i
 app_name='<%= application_name %>'
 database_type='<%= database_type %>'
 app_region='us-west-2'
+worker_is_enabled=<%= use_worker %>
+env_file_name='production.env'
 
 get_ssm_param() {
     param_name=$1
@@ -31,28 +33,41 @@ s3_base_url=$(get_ssm_param "s3/domain")
 user_access_key_id=$(get_ssm_param "iam/access-key-id")
 user_secret_access_key=$(get_ssm_param "iam/secret-access-key")
 
-[ -f production.env ] && rm production.env || echo production.env is not exists yet
+[ -f $env_file_name ] && rm $env_file_name || echo $env_file_name is not exists yet
 
-echo DATABASE_NAME=$db_name >> production.env
-echo DATABASE_USERNAME=$db_user >> production.env
-echo DATABASE_PASSWORD=$db_password >> production.env
-echo DATABASE_HOST=$db_host >> production.env
-echo NODE_ENV=production >> production.env
-echo TOKEN_EXPIRATION_HOUR=24 >> production.env
-echo DATABASE_SYNCHRONIZE=false >> production.env
-echo AUTH_JWT_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a358e160a078390957e5481b069761e8b8c1dcd0489cb0fa2ab302071d878634878161 >> production.env
-echo API_PREFIX=api/v1 >> production.env
-echo AUTH_JWT_TOKEN_EXPIRES_IN=3600 >> production.env
-echo DATABASE_PORT=5432 >> production.env
-echo DATABASE_TYPE=$database_type >> production.env
-echo ACCESS_KEY_ID=$user_access_key_id >> production.env
-echo SECRET_ACCESS_KEY=$user_secret_access_key >> production.env
-echo AWS_DEFAULT_S3_BUCKET=$s3_name >> .env
-echo AWS_DEFAULT_S3_URL=$s3_base_url >> .env
-echo AWS_S3_REGION=$app_region >> .env
+echo DATABASE_NAME=$db_name >> $env_file_name
+echo DATABASE_USERNAME=$db_user >> $env_file_name
+echo DATABASE_PASSWORD=$db_password >> $env_file_name
+echo DATABASE_HOST=$db_host >> $env_file_name
+echo NODE_ENV=production >> $env_file_name
+echo TOKEN_EXPIRATION_HOUR=24 >> $env_file_name
+echo DATABASE_SYNCHRONIZE=false >> $env_file_name
+echo AUTH_JWT_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a358e160a078390957e5481b069761e8b8c1dcd0489cb0fa2ab302071d878634878161 >> $env_file_name
+echo API_PREFIX=api/v1 >> $env_file_name
+echo AUTH_JWT_TOKEN_EXPIRES_IN=3600 >> $env_file_name
+echo DATABASE_PORT=5432 >> $env_file_name
+echo DATABASE_TYPE=$database_type >> $env_file_name
+echo ACCESS_KEY_ID=$user_access_key_id >> $env_file_name
+echo SECRET_ACCESS_KEY=$user_secret_access_key >> $env_file_name
+echo AWS_DEFAULT_S3_BUCKET=$s3_name >> $env_file_name
+echo AWS_DEFAULT_S3_URL=$s3_base_url >> $env_file_name
+echo AWS_S3_REGION=$app_region >> $env_file_name
 
-echo Copy project specific variables to production.env
-cat .env.custom >> production.env
+echo Copy project specific variables to $env_file_name
+cat .env.custom >> $env_file_name
 
-npm run build
-pm2 start npm --no-automation --name $app_name -- run start:prod
+if [[ $DEPLOYMENT_GROUP_NAME = *"WebApp"* ]] && [[ $worker_is_enabled = true ]]
+then
+    # if worker need build - move to parent scope after env
+    npm run build
+    worker_ip=$(get_ssm_param "worker/ip")
+    WORKER_HOST=redis://$worker_ip:6379/1 >> $env_file_name
+
+    pm2 start npm --no-automation --name $app_name -- run start:prod
+fi
+
+if [[ $DEPLOYMENT_GROUP_NAME = *"WorkerApp"* ]]
+then
+    echo TODO:implementStartCommandWorker
+#    pm2 start npm --no-automation --name $app_name-worker -- run start:worker:prod
+fi
