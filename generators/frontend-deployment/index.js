@@ -26,6 +26,12 @@ class FrontEndDeployment extends Generator {
     this.config.set('application_name', `${this.config.get('application_name')}FrontEnd`);
   }
 
+  default() {
+    const projectDestinationPath = this.config.get('project_destination_path');
+
+    this.spawnCommandSync('npx', ['create-react-app', projectDestinationPath]);
+  }
+
   async writing() {
     this.fs.copyTpl(
       this.templatePath('.env.example')
