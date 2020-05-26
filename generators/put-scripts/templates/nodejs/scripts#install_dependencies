@@ -58,10 +58,14 @@ cat .env.custom >> $env_file_name
 
 if [[ $DEPLOYMENT_GROUP_NAME = *"WebApp"* ]] && [[ $worker_is_enabled = true ]]
 then
-    # if worker need build - move to parent scope after env
-    npm run build
     worker_ip=$(get_ssm_param "worker/ip")
     WORKER_HOST=redis://$worker_ip:6379/1 >> $env_file_name
+fi
+
+if [[ $DEPLOYMENT_GROUP_NAME = *"WebApp"* ]]
+then
+    # if worker need build - move to parent scope after env
+    npm run build
 
     pm2 start npm --no-automation --name $app_name -- run start:prod
 fi
