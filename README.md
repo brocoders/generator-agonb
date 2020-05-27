@@ -6,14 +6,18 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
  - [Common Prerequisites](#common-prerequisites)
     - [Nest.js Prerequisites](#nestjs-prerequisites)
     - [Rails Prerequisites](#rails-prerequisites)
- - [Installation](#installation)
+ - [Installation from git repository](#installation)
+    - [NPM](#install-yo-npm)
+    - [YARN](#install-yo-yarn)
  - [Description](#description)
  - [Usage](#run-generator)
+    - [Backend](#usage-backend)
+    - [Frontend](#usage-frontend)
+    - [E2E](#usage-e2e)
  - [Applying to existing repo without clonning](#apply-generator-exists)
    - [Frontend Deployment example](#frontend-deployment-exists)
    - [Backend Deployment example](#backend-deployment-exists)
- - [E2E create project](#e2e-project-template)
-   - [Applying to existing Cypress project](#e2e-apply-exists-cypress)
+   - [Applying to existing Cypress project](#e2e-cypress-exists)
 
 
 ### <a id="common-prerequisites"></a> Common Prerequisites
@@ -29,43 +33,80 @@ npm i -g yo @nestjs/cli
 ```
 
 ### <a id="rails-prerequisites"></a> Rails Prerequisites
-* Desirable Ruby version is 2.5.3
+* RVM
+* Installed `ruby-2.6.6` with RVM
 * Gem Bundler version less the 2.0 (It breaks CodeDeploy agent)
 
 
 ### <a id="installation"></a> Installation
+#### <a id="install-yo-npm"></a> NPM
+install with `HTTPS`
+```bash
+npm i -g git+https://git@github.com:brocoders/generator-agonb.git
 ```
+or SSH
+```bash
 npm i -g git+ssh://git@github.com:brocoders/generator-agonb.git
 ```
-or 
+#### <a id="install-yo-yarn"></a> YARN
+install with `HTTPS`
+```bash
+yarn global add git+https://git@github.com:brocoders/generator-agonb.git
 ```
+or `SSH`
+```bash
 yarn global add git+ssh://git@github.com:brocoders/generator-agonb.git
 ```
 
 ### <a id="description"></a> Description
-Generator will initialize basic NestJS application ready for deployment to AWS. 
+Generator will initialize basic application ready for deployment to AWS. 
 It performs next steps:
-* Clone provided repository
 * Initialize project in folder been created by **git**
 * Copy deployment related files
-* Set up health check route for Elastic Load Balancer
+* Set up health check route for Elastic Load Balancer ( Backend )
+* git init
+* git remote add origin ....
 
 ### <a id="requirements"></a> Requirements
 Git project should have `-backend-app` suffix
 
 ## Usage
 ### <a id="run-generator"></a> Run generator
+
+It's interactive and will ask for few questions:
+* Project technology (Ruby On Rails, NodeJs)
+* Project repository URL (SSH)
+
 Generator can be run at any directory with command:
 ```
 yo agonb
 ```
 
+
+
+### <a id="usage-backend"></a> Backend ( Rails / NestJS )
+
 It's interactive and will ask for few questions:
-* Project technology (Ruby On Rails, NodeJs)
-* Project repository URL (SSH)
+* Worker instance for background tasks
 * DataBase client (Default is `postgres`)
 
-### <a id="apply-generator-exists"></a> Applying to existing repo without cloning
+
+### <a id="usage-frontend"></a> Frontend
+
+It's interactive and will ask for few questions:
+* Project type generator:
+    - create react app
+    - gatsby
+    - empty
+
+
+### <a id="usage-e2e"></a> E2E
+
+It's interactive and will ask for few questions:
+* E2E framework (Default is `cypress`)
+
+
+## <a id="apply-generator-exists"></a> Applying to existing repo without cloning
 The purpose of this sub generator is to put aws deployment related scripts to project.
 
 Working directory must be directory of a project and contain `.yo-rc.json`
@@ -86,14 +127,14 @@ yo agonb
 ```
 {
   "generator-agonb": {
-    "repository_url": "git@github.com:brocoders/geniepad-frontend-app.git",
-    "project_destination_path": "geniepad-frontend-app",
-    "application_name": "geniepadFrontEnd",
-    "project_technology": "frontend-deployment",
-    "api_url": " https://geniepad.brocoders.xyz"
+    "repositoryUrl": "git@github.com:brocoders/appname-frontend-app.git",
+    "projectDestinationPath": "appname-frontend-app",
+    "applicationName": "appnameFrontEnd",
+    "projectTechnology": "frontend-deployment",
+    "apiUrl": " https://appname.brocoders.xyz",
+    "enablePullRequest": false
   }
 }
-
 ```
 
 
@@ -102,29 +143,17 @@ yo agonb
 ```
 {
   "generator-agonb": {
-    "repository_url": "git@github.com:brocoders/appname-backend-app.git",
-    "project_destination_path": "appname-backend-app",
-    "application_name": "appname",
-    "project_technology": "rubyonrails",
-    "database_type": "postgresql",
-    "use_worker": true
+    "repositoryUrl": "git@github.com:brocoders/appname-backend-app.git",
+    "projectDestinationPath": "appname-backend-app",
+    "applicationName": "appname",
+    "projectTechnology": "rubyonrails",
+    "databaseType": "postgresql",
+    "useWorker": true
   }
 }
 ```
 
-
-### <a id="e2e-project-template"></a> E2E create project
-Generator can be run at any directory with command:
-```
-yo agonb:e2e
-```
-
-It's interactive and will ask for few questions:
-* Directory name
-* Project E2E technology (Cypress)
-
-
-### <a id="e2e-apply-exists-cypress"></a> Applying to existing Cypress project
+### <a id="e2e-cypress-exists"></a> Applying to existing Cypress project
 Create file  
 .yo-rc.json
 ```
