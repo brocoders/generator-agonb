@@ -31,7 +31,7 @@ class Agonb extends Generator {
         type: 'list'
         , name: 'useWorker'
         , message: 'Do you need worker instance?'
-        , when: ({ project_technology }) => ['nestjs', 'rails'].includes(project_technology)
+        , when: ({ projectTechnology }) => ['nestjs', 'rails'].includes(projectTechnology)
         , choices: [
           {
             name: 'Yes', value: true
@@ -45,7 +45,8 @@ class Agonb extends Generator {
   }
 
   configuring() {
-    let projectDestinationPath, projectApplicationName;
+    let projectDestinationPath;
+    let projectApplicationName;
     const {
       projectTechnology,
       repositoryUrl,
@@ -57,7 +58,11 @@ class Agonb extends Generator {
 
       projectDestinationPath = projectDestinationPath.replace(/\.git$/, '');
 
-      [, projectApplicationName] = projectDestinationPath.match(/^(.+)-(back|front)end-app$/);
+      if (projectTechnology === 'e2e') {
+        projectApplicationName = projectDestinationPath;
+      } else {
+        [, projectApplicationName] = projectDestinationPath.match(/^(.+)-(back|front)end-app$/);
+      }
     } catch (e) {
       throw new Error('Error during application directory/name parsing. Must be a <projectName>-(back|front)end-app');
     }
