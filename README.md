@@ -74,7 +74,7 @@ Git project should have `-backend-app` suffix
 ### <a id="run-generator"></a> Run generator
 
 It's interactive and will ask for few questions:
-* Project technology (Ruby On Rails, NodeJs)
+* Project technology (Ruby On Rails, NodeJs, Frontend, E2E)
 * Project repository URL (SSH)
 
 Generator can be run at any directory with command:
@@ -97,7 +97,7 @@ It's interactive and will ask for few questions:
 * Project type generator:
     - create react app
     - gatsby
-    - empty
+    - empty project
 
 
 ### <a id="usage-e2e"></a> E2E
@@ -130,9 +130,10 @@ yo agonb
     "repositoryUrl": "git@github.com:brocoders/appname-frontend-app.git",
     "projectDestinationPath": "appname-frontend-app",
     "applicationName": "appnameFrontEnd",
-    "projectTechnology": "frontend-deployment",
+    "projectTechnology": "frontend",
     "apiUrl": " https://appname.brocoders.xyz",
-    "enablePullRequest": false
+    "enablePullRequest": false,
+    "projectGenerator": "cra|gatsby|none"
   }
 }
 ```
