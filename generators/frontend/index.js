@@ -78,11 +78,6 @@ class FrontEndDeployment extends Generator {
     this.composeWith(require.resolve('../frontend-scripts'), {
       destinationPath,
     });
-
-    // this.fs.append(
-    //   this.destinationPath(`${destinationPath}/.gitignore`),
-    //   this.fs.read(this.templatePath('.gitignore.extended'))
-    // );
   }
 
   end() {

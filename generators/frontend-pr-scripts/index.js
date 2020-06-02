@@ -1,6 +1,6 @@
 const Generator = require('yeoman-generator');
 
-class UpdateScripts extends Generator {
+class FrontendPRScripts extends Generator {
   writing() {
     const { destinationPath } = this.options;
 
@@ -11,4 +11,4 @@ class UpdateScripts extends Generator {
   }
 }
 
-module.exports = UpdateScripts;
+module.exports = FrontendPRScripts;
