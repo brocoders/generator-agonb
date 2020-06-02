@@ -4,7 +4,7 @@ const Generator = require('yeoman-generator');
 
 const { handleError } = require('../helpers');
 
-class RubyOnRails extends Generator {
+class RailsScripts extends Generator {
   initializing() {
     this.on('error', handleError.bind(this));
   }
@@ -12,18 +12,20 @@ class RubyOnRails extends Generator {
   writing() {
     const {
       applicationName,
-      projectDestinationPath,
       useWorker,
     } = this.config.getAll();
+    const {
+      destinationPath = '.',
+    } = this.options;
 
-    this.composeWith(require.resolve('../rails-modify-tpl'), {});
+    this.composeWith(require.resolve('../rails-modify-tpl'), { destinationPath });
 
     this.fs.copyTpl(
       this.templatePath(),
-      this.destinationPath(projectDestinationPath),
+      this.destinationPath(destinationPath),
       { applicationName, useWorker },
     );
   }
 }
 
-module.exports = RubyOnRails;
+module.exports = RailsScripts;

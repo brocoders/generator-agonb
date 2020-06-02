@@ -4,7 +4,7 @@ const Generator = require('yeoman-generator');
 
 const { handleError } = require('../helpers');
 
-class RubyOnRails extends Generator {
+class RailsModifyTemplate extends Generator {
   initializing() {
     this.on('error', handleError.bind(this));
   }
@@ -12,16 +12,18 @@ class RubyOnRails extends Generator {
   writing() {
     const {
       applicationName,
-      projectDestinationPath,
       useWorker = false,
     } = this.config.getAll();
+    const {
+      destinationPath = '.',
+    } = this.options;
 
     this.fs.copyTpl(
       [
         `${this.templatePath()}/**`,
         '!config/sidekiq.yml',
       ],
-      this.destinationPath(projectDestinationPath),
+      this.destinationPath(destinationPath),
       { applicationName },
       {},
       {
@@ -34,11 +36,11 @@ class RubyOnRails extends Generator {
     if (useWorker) {
       this.fs.copyTpl(
         this.templatePath('config/sidekiq.yml')
-        , this.destinationPath(`${projectDestinationPath}/config/sidekiq.yml`),
+        , this.destinationPath(`${destinationPath}/config/sidekiq.yml`),
         { applicationName },
       );
     }
   }
 }
 
-module.exports = RubyOnRails;
+module.exports = RailsModifyTemplate;

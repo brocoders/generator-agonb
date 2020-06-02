@@ -15,20 +15,19 @@ class RubyOnRails extends Generator {
   initializing() {
     this.on('error', handleError.bind(this));
 
-    const currentInstalledRuby = execSync('/bin/bash -lc "rvm current"');
-    const [ major, minor, patch ] = currentInstalledRuby
-      .toString()
-      .split('-')[1]
-      .split('.')
-      .map(str => parseInt(str, 10));
-    const isRequiredVersion = RUBY_MAJOR === major
-      && RUBY_MINOR === minor
-      && RUBY_PATCH === patch;
-
-    if (isRequiredVersion === false) {
-      throw new Error(`Generator require only ${RUBY_VERSION}.
-      Install ruby ${RUBY_INSTALL_CMD}`);
-    }
+    const currentInstalledRuby = this.spawnCommandSync('rvm', ['install', RUBY_VERSION], { shell: true });
+    // const [ major, minor, patch ] = currentInstalledRuby
+    //   .toString()
+    //   .split('-')[1]
+    //   .split('.')
+    //   .map(str => parseInt(str, 10));
+    // const isRequiredVersion = RUBY_MAJOR === major
+    //   && RUBY_MINOR === minor
+    //   && RUBY_PATCH === patch;
+    // if (currentInstalledRuby.toString().includes(RUBY_VERSION) === false) {
+    //   throw new Error(`Generator require only ${RUBY_VERSION}.
+    //   Install ruby ${RUBY_INSTALL_CMD}`);
+    // }
   }
 
   async prompting() {
@@ -57,8 +56,7 @@ class RubyOnRails extends Generator {
     const templateEnv = `ENABLE_WORKER=${useWorker}`;
 
     execSync('/bin/bash --login');
-    this.spawnCommandSync('rvm', ['use', `ruby-${RUBY_VERSION}`])
-    // execSync(`rvm use ruby-${RUBY_VERSION}`);
+    this.spawnCommandSync('rvm', ['use', `ruby-${RUBY_VERSION}`], { shell: true });
 
     this.spawnCommandSync(
       `${templateEnv} rails`
@@ -84,6 +82,7 @@ class RubyOnRails extends Generator {
     const destinationPath = this.config.get('projectDestinationPath');
 
     this.composeWith(require.resolve('../rails-scripts'), { destinationPath });
+    this.composeWith(require.resolve('../project-readme'), { destinationPath });
   }
 
   end() {

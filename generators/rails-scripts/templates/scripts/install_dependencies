@@ -52,16 +52,13 @@ echo AWS_S3_REGION=$app_region >> $env_file_name
 
 if [[ $DEPLOYMENT_GROUP_NAME = *"-WebApp"* ]] && [[ $worker_is_enabled = true ]]
 then
-    worker_ip=$(get_ssm_param "WorkerAppIpSSM")
+    worker_ip=$(get_ssm_param "worker/ip")
 
     echo REDIS_URL=redis://$worker_ip\:6379 >> $env_file_name
 fi
 
 echo Copy project specific variables to $env_file_name
 cat .env.custom >> $env_file_name
-
-#rvm requirements
-#rvm install 2.3.3
 
 gem install bundler -v 1.17.0
 bundle install --without development test
