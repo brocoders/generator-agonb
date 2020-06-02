@@ -1,6 +1,6 @@
 const Generator = require('yeoman-generator');
 
-class UpdateScripts extends Generator {
+class PutScripts extends Generator {
   writing() {
     const { projectTechnology } = this.config.getAll();
     this.composeWith(require.resolve(`../${projectTechnology}-scripts`) ,{
@@ -9,4 +9,4 @@ class UpdateScripts extends Generator {
   }
 }
 
-module.exports = UpdateScripts;
+module.exports = PutScripts;
