@@ -29,15 +29,18 @@ class E2EProjectInitializer extends Generator {
   }
 
   async writing() {
-    const { e2eType, projectDestinationPath } = this.config.getAll();
+    const {
+      e2eType,
+      projectDestinationPath: destinationPath,
+    } = this.config.getAll();
 
-    execSync(`mkdir ${projectDestinationPath}`);
+    execSync(`mkdir ${destinationPath}`);
     this.fs.copy(
       this.templatePath(e2eType),
-      this.destinationPath(projectDestinationPath),
+      this.destinationPath(destinationPath),
     );
 
-    this.composeWith(require.resolve('../e2e-scripts'), { e2eType, projectDestinationPath });
+    this.composeWith(require.resolve('../e2e-scripts'), { e2eType, destinationPath });
   }
 
   end() {
