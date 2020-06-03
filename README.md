@@ -4,7 +4,6 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
 
 # Content
  - [Common Prerequisites](#common-prerequisites)
-    - [Nest.js Prerequisites](#nestjs-prerequisites)
     - [Rails Prerequisites](#rails-prerequisites)
  - [Installation from git repository](#installation)
     - [NPM](#install-yo-npm)
@@ -21,16 +20,11 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
 
 
 ### <a id="common-prerequisites"></a> Common Prerequisites
-* Nodejs >= 12.x
-* npm
-* yarn
-* yo
-
-### <a id="nestjs-prerequisites"></a> Nest.js Prerequisites
-* @nestjs/cli ()
-```
-npm i -g yo @nestjs/cli
-```
+* Nodejs >= 12.x - required
+* npm - required
+* yo - required
+* npx - required
+* yarn - optional
 
 ### <a id="rails-prerequisites"></a> Rails Prerequisites
 * RVM
@@ -127,11 +121,11 @@ yo agonb
 ```
 {
   "generator-agonb": {
-    "repositoryUrl": "git@github.com:brocoders/appname-frontend-app.git",
-    "projectDestinationPath": "appname-frontend-app",
-    "applicationName": "appnameFrontEnd",
+    "repositoryUrl": "git@github.com:brocoders/<appname>-frontend-app.git",
+    "projectDestinationPath": "<appname>-frontend-app",
+    "applicationName": "<appname>FrontEnd",
     "projectTechnology": "frontend",
-    "apiUrl": " https://appname.brocoders.xyz",
+    "apiUrl": " https://<appname>.brocoders.xyz",
     "enablePullRequest": false,
     "projectGenerator": "cra|gatsby|none"
   }
@@ -144,9 +138,9 @@ yo agonb
 ```
 {
   "generator-agonb": {
-    "repositoryUrl": "git@github.com:brocoders/appname-backend-app.git",
-    "projectDestinationPath": "appname-backend-app",
-    "applicationName": "appname",
+    "repositoryUrl": "git@github.com:brocoders/<appname>-backend-app.git",
+    "projectDestinationPath": "<appname>-backend-app",
+    "applicationName": "<appname>",
     "projectTechnology": "rubyonrails",
     "databaseType": "postgresql",
     "useWorker": true
@@ -160,6 +154,11 @@ Create file
 ```
 {
   "generator-agonb": {
+    "repositoryUrl": "https://github.com/brocoders/<appname>-e2e-cypress-app.git",
+    "projectDestinationPath": "<appname>-e2e-cypress-app",
+    "applicationName": "<appname>-e2e-cypress-app",
+    "projectTechnology": "e2e",
+    "useWorker": false,
     "e2eType": "cypress"
   }
 }
