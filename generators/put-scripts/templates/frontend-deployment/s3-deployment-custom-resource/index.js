@@ -8,7 +8,7 @@ const AdmZip = require('adm-zip');
 const async = require('async');
 const mime = require('mime');
 
-const { SLACK_HOOK_URL, CLOUD_FRONT_DISTRIBUTION_ID } = process.env;
+const { SLACK_HOOK_URL, CLOUD_FRONT_DISTRIBUTION_ID, SERVICE_NAME } = process.env;
 
 const statuses = {
   started: 'STARTED'
@@ -68,7 +68,7 @@ exports.notify_slack_of_pipeline_changes = (event, context) => {
 
   const { detail: { stage, state, pipeline }, region } = event;
 
-  const project = `<%= application_name %>_${stage.toLowerCase()}_build`;
+  const project = `${SERVICE_NAME}_${stage.toLowerCase()}_build`;
   const log_link = `https://console.aws.amazon.com/cloudwatch/home?region=${region}#logEventViewer:group=/aws/codebuild/${project};start=P1D`;
   const log_button = {
     fallback: `View build logs ${log_link}`
