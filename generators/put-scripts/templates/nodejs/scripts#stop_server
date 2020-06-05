@@ -1,7 +1,0 @@
-#!/bin/bash
-
-. ~/.nvm/nvm.sh
-
-pm2 delete <%= application_name %> || echo no running instance of <%= application_name %>
-
-exit 0

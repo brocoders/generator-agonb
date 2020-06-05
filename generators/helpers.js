@@ -2,7 +2,7 @@
 
 const handleError = function (err) {
   this.log(err.message);
-  const projectDestinationPath = this.config.get('project_destination_path');
+  const projectDestinationPath = this.config.get('projectDestinationPath');
 
   if (projectDestinationPath) {
     this.log(`Removing project directory: ${projectDestinationPath}...`);

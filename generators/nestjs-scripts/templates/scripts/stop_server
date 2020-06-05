@@ -1,0 +1,17 @@
+#!/bin/bash
+
+. ~/.nvm/nvm.sh
+
+app_name='<%= applicationName %> '
+
+if [[ $DEPLOYMENT_GROUP_NAME = *"WebApp"* ]]
+then
+    pm2 delete $app_name || echo no running instance of $app_name
+fi
+
+if [[ $DEPLOYMENT_GROUP_NAME = *"WorkerApp"* ]]
+then
+    echo TODO:implementStopCommandWorker
+#    pm2 delete $app_name-worker || echo no running instance of $app_name-worker
+fi
+exit 0

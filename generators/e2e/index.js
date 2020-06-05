@@ -11,11 +11,6 @@ class E2EProjectInitializer extends Generator {
   async prompting() {
     this.answers = await this.prompt([
       {
-        type: 'input',
-        name: 'directoryName',
-        message: 'Enter directory name',
-      },
-      {
         type: 'list'
         , name: 'e2eType'
         , message: 'E2E type'
@@ -34,21 +29,22 @@ class E2EProjectInitializer extends Generator {
   }
 
   async writing() {
-    const { directoryName } = this.answers;
-    const { e2eType } = this.config.getAll();
+    const {
+      e2eType,
+      projectDestinationPath: destinationPath,
+    } = this.config.getAll();
 
-    execSync(`mkdir ${directoryName}`);
+    execSync(`mkdir ${destinationPath}`);
     this.fs.copy(
       this.templatePath(e2eType),
-      this.destinationPath(directoryName),
+      this.destinationPath(destinationPath),
     );
 
-    this.composeWith(require.resolve('../e2e-report'), { e2eType, directoryName });
+    this.composeWith(require.resolve('../e2e-scripts'), { e2eType, destinationPath });
   }
 
   end() {
-    const { directoryName, e2eType } = this.answers;
-    execSync(`mv .yo-rc.json ./${directoryName}/.yo-rc.json`);
+    const { e2eType } = this.answers;
     this.log(`Project generated with default ${e2eType} tests
     You need install deps with npm or yarn`);
   }
