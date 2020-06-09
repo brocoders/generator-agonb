@@ -8,7 +8,7 @@ class NestJSScripts extends Generator {
       useWorker,
     } = this.config.getAll();
     const {
-      destinationPath = '.',
+      destinationPath = './',
     } = this.options;
 
     this.fs.copyTpl(
@@ -27,9 +27,9 @@ class NestJSScripts extends Generator {
     // rename 'AppController' to 'HealthCheckController'
     this.spawnCommandSync('find', [`./${destinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/AppController/HealthCheckController/g', '{}', '\;']); // eslint-disable-line no-useless-escape
     // move 'app.controller.ts' to 'health-check.controller.ts'
-    this.spawnCommandSync('mv', [`./${destinationPath}/src/app.controller.ts`, './src/health-check.controller.ts']);
+    this.spawnCommandSync('mv', [`./${destinationPath}/src/app.controller.ts`, `${destinationPath}/src/health-check.controller.ts`]);
     // move 'app.controller.spec.ts' to 'health-check.controller.spec.ts'
-    this.spawnCommandSync('mv', [`./${destinationPath}/src/app.controller.spec.ts`, './src/health-check.controller.spec.ts']);
+    this.spawnCommandSync('mv', [`./${destinationPath}/src/app.controller.spec.ts`, `${destinationPath}/src/health-check.controller.spec.ts`]);
     // remove bak (backup) files
     this.spawnCommandSync('find', [`./${destinationPath}/src`, '-name', '*.bak', '-type', 'f', '-delete']);
   }

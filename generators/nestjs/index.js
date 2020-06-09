@@ -27,8 +27,14 @@ class NestJS extends Generator {
   default() {
     const projectDestinationPath = this.config.get('projectDestinationPath');
 
-    this.spawnCommandSync('npx', ['@nestjs/cli', 'new', projectDestinationPath]);
-    this.spawnCommandSync('nox', ['@nestjs/cli', 'g', 'co', 'healthcheck' ]);
+    this.spawnCommandSync('npx', [
+      '@nestjs/cli',
+      'new',
+      '--skip-install',
+      '--directory',
+      projectDestinationPath,
+      projectDestinationPath,
+    ], { shell: true });
   }
 
   writing() {
