@@ -36,7 +36,7 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
 #### <a id="install-yo-npm"></a> NPM
 install with `HTTPS`
 ```bash
-npm i -g git+https://git@github.com:brocoders/generator-agonb.git
+npm i -g git+https://git@github.com/brocoders/generator-agonb.git
 ```
 or SSH
 ```bash
@@ -45,7 +45,7 @@ npm i -g git+ssh://git@github.com:brocoders/generator-agonb.git
 #### <a id="install-yo-yarn"></a> YARN
 install with `HTTPS`
 ```bash
-yarn global add git+https://git@github.com:brocoders/generator-agonb.git
+yarn global add git+https://git@github.com/brocoders/generator-agonb.git
 ```
 or `SSH`
 ```bash
