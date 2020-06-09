@@ -93,6 +93,19 @@ aws ssm put-parameter --region us-west-2 --name "/<applicationName>/param-name" 
 aws ssm delete-parameter --region us-west-2 --name "/<applicationName>/example"
 ```
 
+##### SSM parameters list  
+
+| Parameter name  | Description | Example value |
+| ------------- | ------------- | ------------- |
+| `/<applicationName>/worker/ip`  | Default param. When worker instance created.  | IP |
+| `/<applicationName>/s3/name`  | Default param. Bucket name  |  |
+| `/<applicationName>/s3/domain`  | Default param. Bucket name  |  |
+| `/<applicationName>/iam/access-key-id`  | Default param  |  |
+| `/<applicationName>/iam/secret-access-key`  | Default param  |  |
+| `/<applicationName>/db/password`  | Default param  |  |
+| `/<applicationName>/db/name`  | Default param  |  |
+| `/<applicationName>/db/user`  | Default param  |  |
+| `/<applicationName>/db/host`  | Default param  |  |
 
 ### <a id="db-creation"></a> Database creation
 
