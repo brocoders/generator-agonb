@@ -141,7 +141,7 @@ yo agonb
     "repositoryUrl": "git@github.com:brocoders/<appname>-backend-app.git",
     "projectDestinationPath": "<appname>-backend-app",
     "applicationName": "<appname>",
-    "projectTechnology": "rubyonrails",
+    "projectTechnology": "rails|nestjs",
     "databaseType": "postgresql",
     "useWorker": true
   }
