@@ -26,6 +26,8 @@ class NestJSScripts extends Generator {
     this.spawnCommandSync('find', [`./${destinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/getHello/getHealthCheck/g', '{}', '\;']); // eslint-disable-line no-useless-escape
     // rename 'AppController' to 'HealthCheckController'
     this.spawnCommandSync('find', [`./${destinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/AppController/HealthCheckController/g', '{}', '\;']); // eslint-disable-line no-useless-escape
+    // rename app.controller in AppModule
+    this.spawnCommandSync('find', [`./${destinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/app.controller/health-check.controller/g', '{}', '\;']); // eslint-disable-line no-useless-escape
     // move 'app.controller.ts' to 'health-check.controller.ts'
     this.spawnCommandSync('mv', [`./${destinationPath}/src/app.controller.ts`, `${destinationPath}/src/health-check.controller.ts`]);
     // move 'app.controller.spec.ts' to 'health-check.controller.spec.ts'
