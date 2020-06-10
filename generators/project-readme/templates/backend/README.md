@@ -37,7 +37,7 @@ RVM / NVM version
   
 Create SSM parameter with simple value:
   ```bash
-aws ssm put-parameter --region us-west-2 --name "/<applicationName>/example" --value "hello"
+aws ssm put-parameter --region us-west-2 --name "/<applicationName>/example" --value "hello" --type String
 ```
   
 If you want create parameter with `URL` value:
@@ -95,13 +95,15 @@ aws ssm delete-parameter --region us-west-2 --name "/<applicationName>/example"
 
 ##### SSM parameters list  
 
+Replace `<applicationName>` to you app name.  
+
 | Parameter name  | Description | Example value |
 | ------------- | ------------- | ------------- |
 | `/<applicationName>/worker/ip`  | Default param. When worker instance created.  | IP |
 | `/<applicationName>/s3/name`  | Default param. Bucket name  |  |
 | `/<applicationName>/s3/domain`  | Default param. Bucket name  |  |
-| `/<applicationName>/iam/access-key-id`  | Default param  |  |
-| `/<applicationName>/iam/secret-access-key`  | Default param  |  |
+| `/<applicationName>/iam/access-key-id`  | Default param  | Use AWS IAM credentials only on server. |
+| `/<applicationName>/iam/secret-access-key`  | Default param  | Use AWS IAM credentials only on server. |
 | `/<applicationName>/db/password`  | Default param  |  |
 | `/<applicationName>/db/name`  | Default param  |  |
 | `/<applicationName>/db/user`  | Default param  |  |
