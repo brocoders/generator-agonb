@@ -18,7 +18,7 @@ class FrontEndDeployment extends Generator {
       {
         type: 'input'
         , name: 'apiUrl'
-        , message: 'Your API url'
+        , message: 'Your API url. For example https://<appName>.domain.com'
       },
       {
         type: 'list'
@@ -56,12 +56,20 @@ class FrontEndDeployment extends Generator {
   }
 
   default() {
-    const projectDestinationPath = this.config.get('projectDestinationPath');
-    const projectGenerator = this.config.get('projectGenerator');
+    const {
+      projectDestinationPath,
+      projectGenerator,
+      apiUrl,
+    } = this.config.getAll();
 
     switch (projectGenerator) {
       case CRA_GENERATOR:
         this.spawnCommandSync('npx', ['create-react-app', projectDestinationPath]);
+        this.fs.copyTpl(
+          this.templatePath('.env.example'),
+          this.destinationPath(`${projectDestinationPath}/.env`),
+          { apiUrl },
+        );
         break;
 
       case GATSBY_GENERATOR:
