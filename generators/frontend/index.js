@@ -3,10 +3,11 @@
 const Generator = require('yeoman-generator');
 
 const { handleError } = require('../helpers');
-
-const CRA_GENERATOR = 'cra';
-const GATSBY_GENERATOR = 'gatsby';
-const EMPTY_GENERATOR = 'none';
+const {
+  CRA_GENERATOR,
+  EMPTY_GENERATOR,
+  GATSBY_GENERATOR,
+} = require('./generator-types');
 
 class FrontEndDeployment extends Generator {
   initializing() {
@@ -59,17 +60,11 @@ class FrontEndDeployment extends Generator {
     const {
       projectDestinationPath,
       projectGenerator,
-      apiUrl,
     } = this.config.getAll();
 
     switch (projectGenerator) {
       case CRA_GENERATOR:
         this.spawnCommandSync('npx', ['create-react-app', projectDestinationPath]);
-        this.fs.copyTpl(
-          this.templatePath('.env.example'),
-          this.destinationPath(`${projectDestinationPath}/.env`),
-          { apiUrl },
-        );
         break;
 
       case GATSBY_GENERATOR:

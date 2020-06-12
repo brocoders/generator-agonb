@@ -125,7 +125,7 @@ yo agonb
     "projectDestinationPath": "<appname>-frontend-app",
     "applicationName": "<appname>FrontEnd",
     "projectTechnology": "frontend",
-    "apiUrl": " https://<appname>.brocoders.xyz",
+    "apiUrl": "https://<appname>.brocoders.xyz",
     "enablePullRequest": false,
     "projectGenerator": "cra|gatsby|none"
   }
