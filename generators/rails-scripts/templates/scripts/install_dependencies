@@ -1,6 +1,11 @@
 #!/bin/bash
 cd /home/ec2-user/ruby-on-rails
-mkdir -p log
+
+mkdir -p /var/log/rails
+mkdir -p /tmp/rails
+
+ln -s /var/log/rails /home/ec2-user/ruby-on-rails/log
+ln -s /tmp/rails /home/ec2-user/ruby-on-rails/tmp
 
 . ~/.nvm/nvm.sh # for assets, maybe ruby active admin
 source /etc/profile.d/rvm.sh
@@ -8,59 +13,42 @@ rvm list
 rvm gemset list
 gem list
 
-app_name='<%= applicationName %>'
-app_region='us-west-2'
-worker_is_enabled=<%= useWorker %>
-env_file_name='.env'
+# include aws functions
+source ./aws.sh
 
-get_ssm_param() {
-    param_name=$1
-    echo $(aws ssm get-parameter \
-        --region ${app_region} \
-        --name /${app_name}/${param_name} \
-        --with-decryption \
-        --query Parameter.Value \
-        --output text
-    )
-}
-
-db_name=$(get_ssm_param "db/name")
-db_user=$(get_ssm_param "db/user")
-db_password=$(get_ssm_param "db/password")
-db_host=$(get_ssm_param "db/host")
-s3_name=$(get_ssm_param "s3/name")
-s3_base_url=$(get_ssm_param "s3/domain")
-user_access_key_id=$(get_ssm_param "iam/access-key-id")
-user_secret_access_key=$(get_ssm_param "iam/secret-access-key")
-
-[ -f $env_file_name ] && rm $env_file_name || echo $env_file_name is not exists yet
-
-echo DATABASE=$db_name >> $env_file_name
-echo DATABASE_USERNAME=$db_user >> $env_file_name
-echo DATABASE_PASSWORD=$db_password >> $env_file_name
-echo DATABASE_HOST=$db_host >> $env_file_name
-echo RAILS_ENV=production >> $env_file_name
-echo RAKE_ENV=production >> $env_file_name
-echo DEVISE_SECRET=8db1b8d5158b97eb7b54bf002765323c04a5c1be86d34b44548637f6e7a358e160a078390957e5481b069761e8b8c1dcd0489cb0fa2ab302071d878634878161 >> $env_file_name
-echo DAEMONIZE_PUMA=true >> $env_file_name
-echo PORT=80 >> $env_file_name
-echo AWS_ACCESS_KEY_ID=$user_access_key_id >> $env_file_name
-echo AWS_SECRET_ACCESS_KEY=$user_secret_access_key >> $env_file_name
-echo AWS_DEFAULT_S3_BUCKET=$s3_name >> $env_file_name
-echo AWS_DEFAULT_S3_URL=$s3_base_url >> $env_file_name
-echo AWS_S3_REGION=$app_region >> $env_file_name
-
-if [[ $DEPLOYMENT_GROUP_NAME = *"-WebApp"* ]] && [[ $worker_is_enabled = true ]]
+# when production
+if [[ $DEPLOYMENT_GROUP_NAME = *"prod"* ]]
 then
-    worker_ip=$(get_ssm_param "worker/ip")
+    app_name='<%= applicationName %>'
+    app_region='us-west-2'
+    prefix='prod'
 
-    echo REDIS_URL=redis://$worker_ip\:6379 >> $env_file_name
+    init_aws_env
+
+    sh ./scripts/production.sh ${app_region} ${app_name}
 fi
 
-echo Copy project specific variables to $env_file_name
-cat .env.custom >> $env_file_name
+# when release candidate
+if [[ $DEPLOYMENT_GROUP_NAME = *"release"* ]]
+then
+    app_name='<%= applicationName %>'
+    app_region='us-west-2'
+    prefix='release'
 
-gem install bundler -v 1.17.0
-bundle install --without development test
+    init_aws_env
 
-export SECRET_KEY_BASE="$(bundle exec rake secret)"
+    sh ./scripts/release-candidate.sh ${app_region} ${app_name}
+fi
+
+# when development
+if [[ $DEPLOYMENT_GROUP_NAME = *"dev"* ]]
+then
+    app_name='<%= applicationName %>'
+    app_region='us-west-2'
+    prefix='dev'
+
+    init_aws_env
+
+    sh ./scripts/development.sh ${app_region} ${app_name}
+fi
+
