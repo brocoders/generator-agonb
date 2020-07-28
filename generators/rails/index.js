@@ -82,7 +82,6 @@ class RubyOnRails extends Generator {
     const destinationPath = this.config.get('projectDestinationPath');
 
     this.composeWith(require.resolve('../rails-scripts'), { destinationPath });
-    this.composeWith(require.resolve('../project-readme'), { destinationPath });
   }
 
   end() {

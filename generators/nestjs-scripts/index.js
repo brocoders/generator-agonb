@@ -21,7 +21,10 @@ class NestJSScripts extends Generator {
       }
     );
 
-    this.composeWith(require.resolve('../project-readme'), { destinationPath });
+    this.composeWith(require.resolve('../project-readme'), {
+      type: 'backend',
+      destinationPath,
+    });
     // rename 'getHello' to 'getHealthCheck'
     this.spawnCommandSync('find', [`./${destinationPath}/src`, '-type', 'f', '-exec', 'sed', '-i.bak', 's/getHello/getHealthCheck/g', '{}', '\;']); // eslint-disable-line no-useless-escape
     // rename 'AppController' to 'HealthCheckController'
