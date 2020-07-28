@@ -3,6 +3,9 @@ cd /home/ec2-user/node-js-app
 
 . ~/.nvm/nvm.sh
 
+npm i -g @nestjs/cli typescript ts-node
+npm i
+
 # include aws functions
 source ./aws.sh
 

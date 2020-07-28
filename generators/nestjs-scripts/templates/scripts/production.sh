@@ -8,9 +8,6 @@ app_name=$2
 prefix=$3
 worker_is_enabled=<%= useWorker %>
 
-npm i -g @nestjs/cli typescript ts-node
-npm i
-
 # include aws functions
 source ./aws.sh
 
