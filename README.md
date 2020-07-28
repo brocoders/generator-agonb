@@ -123,7 +123,7 @@ yo agonb
   "generator-agonb": {
     "repositoryUrl": "git@github.com:brocoders/<appname>-frontend-app.git",
     "projectDestinationPath": "<appname>-frontend-app",
-    "applicationName": "<appname>FrontEnd",
+    "domain": "https://<domain>.<subdomain>.brocoders.xyz",
     "projectTechnology": "frontend",
     "apiUrl": "https://<appname>.brocoders.xyz",
     "enablePullRequest": false,
@@ -131,6 +131,8 @@ yo agonb
   }
 }
 ```
+
+ - `domain` - Frontend domain: ask in DevOps team
 
 
 ### <a id="backend-deployment-exists"></a> Backend Deployment example
