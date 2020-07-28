@@ -39,7 +39,7 @@ RVM / NVM version
   
 Create SSM parameter with simple value:
   ```bash
-aws ssm put-parameter --region us-west-2 --name "/<applicationName>/<env>/<env>/example" --value "hello" --type String
+aws ssm put-parameter --region us-west-2 --name "/<applicationName>/<env>/example" --value "hello" --type String
 ```
   
 If you want create parameter with `URL` value:
