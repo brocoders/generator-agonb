@@ -19,7 +19,7 @@ class FrontEndDeployment extends Generator {
       {
         type: 'input'
         , name: 'apiUrl'
-        , message: 'Your API url. For example https://<appName>.domain.com'
+        , message: 'Backend API url. For example https://<appName>.domain.com . Ask in DevOps team or backend project backend developers or ignore'
       },
       {
         type: 'list'
@@ -39,6 +39,11 @@ class FrontEndDeployment extends Generator {
           { value: CRA_GENERATOR, name: 'Create react app' },
           { value: EMPTY_GENERATOR, name: 'Empty project. You must configure buildspec.yml manually' }
         ]
+      },
+      {
+        type: 'input'
+        , name: 'domain'
+        , message: 'Frontend domain ( without scheme ), ask in DevOps team or skip and fill later'
       }
     ]);
   }
@@ -48,12 +53,13 @@ class FrontEndDeployment extends Generator {
       apiUrl,
       projectGenerator,
       enablePullRequest,
+      domain,
     } = this.answers;
 
     this.config.set('apiUrl', apiUrl);
-    this.config.set('applicationName', `${this.config.get('applicationName')}FrontEnd`);
     this.config.set('projectGenerator', projectGenerator);
     this.config.set('enablePullRequest', enablePullRequest);
+    this.config.set('domain', domain);
   }
 
   default() {
