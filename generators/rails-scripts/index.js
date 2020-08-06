@@ -25,6 +25,11 @@ class RailsScripts extends Generator {
       this.destinationPath(destinationPath),
       { applicationName, useWorker },
     );
+
+    this.composeWith(require.resolve('../project-readme'), {
+      destinationPath,
+      type: 'backend',
+    });
   }
 }
 

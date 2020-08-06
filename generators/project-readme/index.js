@@ -1,21 +1,33 @@
 const Generator = require('yeoman-generator');
 const { existsSync, unlinkSync } = require('fs');
 
-// TODO: add using in frontend, e2e generators
 class ProjectREADME extends Generator {
   writing() {
     const {
       destinationPath = '.',
+      generator,
+      type,
     } = this.options;
 
     if (existsSync(`${this.destinationPath(destinationPath)}/README.md`)) {
       unlinkSync(`${this.destinationPath(destinationPath)}/README.md`);
     }
 
-    this.fs.copyTpl(
-      this.templatePath('backend/README.md'),
-      this.destinationPath(`${destinationPath}/README.md`),
-    );
+    switch (type) {
+      case 'backend':
+        this.fs.copyTpl(
+          this.templatePath('backend/README.md'),
+          this.destinationPath(`${destinationPath}/README.md`),
+        );
+        break;
+
+      case 'frontend':
+        this.fs.copyTpl(
+          this.templatePath(`frontend/${generator}/README.md`),
+          this.destinationPath(`${destinationPath}/README.md`),
+        );
+        break;
+    }
   }
 }
 

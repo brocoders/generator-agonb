@@ -6,13 +6,12 @@ files:
 hooks:
   AfterInstall:
     - location: scripts/install_dependencies
-      timeout: 300
-      runas: root
-  ApplicationStart:
-    - location: scripts/start_server
-      timeout: 60
+      timeout: 400
       runas: root
   ApplicationStop:
     - location: scripts/stop_server
       timeout: 300
+      runas: root
+  BeforeInstall:
+    - location: scripts/arrange-deployment-folders.sh
       runas: root

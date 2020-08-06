@@ -32,46 +32,48 @@ RVM / NVM version
  
  **Developer must add to documentation how SSM parameter created.**  
  **Save in SSM parameters only important environment variables. Other data can be saved in application config**  
- 
+
+ `<env>` - can be `dev` | `release` | `prod`. By default is `dev`  
+
   - create
   
 Create SSM parameter with simple value:
   ```bash
-aws ssm put-parameter --region us-west-2 --name "/<applicationName>/example" --value "hello" --type String
+aws ssm put-parameter --region us-west-2 --name "/<applicationName>/<env>/example" --value "hello" --type String
 ```
   
 If you want create parameter with `URL` value:
   ```bash
-aws ssm put-parameter --region us-west-2 --cli-input-json '{ "Name": "/<applicationName>/param-name", "Value": "https://google.com/", "Type": "String" }'
+aws ssm put-parameter --region us-west-2 --cli-input-json '{ "Name": "/<applicationName>/<env>/param-name", "Value": "https://google.com/", "Type": "String" }'
 ```
 
 If you want encrypt SSM parameter:
   ```bash
-aws ssm put-parameter --region us-west-2 --name "/<applicationName>/param-name" --type SecureString --value "hello"
+aws ssm put-parameter --region us-west-2 --name "/<applicationName>/<env>/param-name" --type SecureString --value "hello"
 ```
   
   - read
   
 List SSM parameters:
   ```bash
-aws ssm get-parameters-by-path --region us-west-2 --path "/<applicationName>/" --recursive
+aws ssm get-parameters-by-path --region us-west-2 --path "/<applicationName>/<env>/" --recursive
 ```
   You can change output with next output format `table`, `json` or `csv` with flag `--output=<format>`  
 
   
 Get single SSM parameter:
   ```bash
-aws ssm get-parameter --region us-west-2 --name "/<applicationName>/param-name"
+aws ssm get-parameter --region us-west-2 --name "/<applicationName>/<env>/param-name"
 ```
 
 Get value from encrypted SSM parameter:
 ```bash
-aws ssm get-parameter --region us-west-2 --name "/<applicationName>/param-name" --with-decryption
+aws ssm get-parameter --region us-west-2 --name "/<applicationName>/<env>/param-name" --with-decryption
 ```
 
 Get only value from SSM parameter
 ```bash
-aws ssm get-parameter --region us-west-2 --name "/<applicationName>/param-name" --query Parameter.Value --output text
+aws ssm get-parameter --region us-west-2 --name "/<applicationName>/<env>/param-name" --query Parameter.Value --output text
 ```
 
   
@@ -79,35 +81,35 @@ aws ssm get-parameter --region us-west-2 --name "/<applicationName>/param-name" 
 
 Update SSM parameter:
 ```bash
-aws ssm put-parameter --region us-west-2 --name "/<applicationName>/param-name" --type String --value "hello" --overwrite
+aws ssm put-parameter --region us-west-2 --name "/<applicationName>/<env>/param-name" --type String --value "hello" --overwrite
 ```
 
 Update secure SSM parameter:
 ```bash
-aws ssm put-parameter --region us-west-2 --name "/<applicationName>/param-name" --type SecureString --value "hello" --overwrite
+aws ssm put-parameter --region us-west-2 --name "/<applicationName>/<env>/param-name" --type SecureString --value "hello" --overwrite
 ```
   
   - delete
   
   ```bash
-aws ssm delete-parameter --region us-west-2 --name "/<applicationName>/example"
+aws ssm delete-parameter --region us-west-2 --name "/<applicationName>/<env>/example"
 ```
 
 ##### SSM parameters list  
 
-Replace `<applicationName>` to you app name.  
+Replace `<applicationName>/<env>` to you app name.  
 
 | Parameter name  | Description | Example value |
 | ------------- | ------------- | ------------- |
-| `/<applicationName>/worker/ip`  | Default param. When worker instance created.  | IP |
-| `/<applicationName>/s3/name`  | Default param. Bucket name  |  |
-| `/<applicationName>/s3/domain`  | Default param. Bucket name  |  |
-| `/<applicationName>/iam/access-key-id`  | Default param  | Use AWS IAM credentials only on server. |
-| `/<applicationName>/iam/secret-access-key`  | Default param  | Use AWS IAM credentials only on server. |
-| `/<applicationName>/db/password`  | Default param  |  |
-| `/<applicationName>/db/name`  | Default param  |  |
-| `/<applicationName>/db/user`  | Default param  |  |
-| `/<applicationName>/db/host`  | Default param  |  |
+| `/<applicationName>/<env>/worker/ip`  | Default param. When worker instance created.  | IP |
+| `/<applicationName>/<env>/s3/name`  | Default param. Bucket name  |  |
+| `/<applicationName>/<env>/s3/domain`  | Default param. Bucket name  |  |
+| `/<applicationName>/<env>/iam/access-key-id`  | Default param  | Use AWS IAM credentials only on server. |
+| `/<applicationName>/<env>/iam/secret-access-key`  | Default param  | Use AWS IAM credentials only on server. |
+| `/<applicationName>/<env>/db/password`  | Default param  |  |
+| `/<applicationName>/<env>/db/name`  | Default param  |  |
+| `/<applicationName>/<env>/db/user`  | Default param  |  |
+| `/<applicationName>/<env>/db/host`  | Default param  |  |
 
 ### <a id="db-creation"></a> Database creation
 
