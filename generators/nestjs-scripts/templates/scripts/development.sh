@@ -9,7 +9,7 @@ prefix=$3
 worker_is_enabled=<%= useWorker %>
 
 # include aws functions
-source ./aws.sh
+source ./scripts/aws.sh
 
 if [[ $DEPLOYMENT_GROUP_NAME = *"WebApp"* ]]
 then
