@@ -2,6 +2,8 @@ version: 0.2
 
 phases:
   install:
+    runtime-version:
+      nodejs: 12.x
     commands:
       - cd $CODEBUILD_SRC_DIR;
       - npm install -g env-cmd
