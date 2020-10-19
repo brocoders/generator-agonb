@@ -8,12 +8,15 @@ worker_is_enabled=<%= useWorker %>
 # echo Copy project specific variables to .env
 # cat .env.development >> .env
 
+# include aws functions
+source ./scripts/aws.sh
+
 gem install bundler -v 1.17.0
 bundle install --without development test
 
 export SECRET_KEY_BASE="$(bundle exec rake secret)"
 
-if [[ $DEPLOYMENT_GROUP_NAME = *"-WebApp"* ]] && [[ $worker_is_enabled = true ]]
+if [[ $DEPLOYMENT_GROUP_NAME = *"-WebApp"* ]]
 then
     if [[ $worker_is_enabled = true ]]; then
       worker_ip=$(get_ssm_param "worker/ip")

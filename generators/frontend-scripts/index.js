@@ -1,9 +1,10 @@
 const Generator = require('yeoman-generator');
-const fs = require('fs');
 
 const {
   CRA_GENERATOR,
 } = require('./../frontend/generator-types');
+
+const envs = ['release', 'prod', 'dev'];
 
 class FrontendScripts extends Generator {
   writing() {
@@ -16,21 +17,31 @@ class FrontendScripts extends Generator {
     switch (projectGenerator) {
       case CRA_GENERATOR:
         this._craCopyExampleMultiEnv(destinationPath);
-        this._craAddBuildMultiEnv(destinationPath);
         break;
 
       default:
+        this._copyExampleMultiEnv(destinationPath, projectGenerator);
         break;
     }
 
     this.composeWith(require.resolve('../frontend-deploy-scripts'), { destinationPath });
     this.composeWith(require.resolve('../project-readme'), {
       type: 'frontend',
-      generator: CRA_GENERATOR,
+      generator: projectGenerator,
       destinationPath,
     });
     if (enablePullRequest) {
       this.composeWith(require.resolve('../frontend-pr-scripts'), { destinationPath });
+    }
+  }
+
+  _copyExampleMultiEnv(destinationPath, projectGenerator) {
+    for (const env of envs) {
+      this.fs.copyTpl(
+        this.templatePath(`${projectGenerator}/.env.example`),
+        this.destinationPath(`${destinationPath}/.env.${env}`),
+        {},
+      );
     }
   }
 
@@ -39,29 +50,19 @@ class FrontendScripts extends Generator {
       apiUrl,
       domain,
     } = this.config.getAll();
-    const envs = ['release', 'prod', 'dev'];
+    let payload = {};
     for (const env of envs) {
+      if (env === 'dev') {
+        payload = { apiUrl, domain };
+      } else {
+        payload = { apiUrl: '', domain: '' };
+      }
       this.fs.copyTpl(
-        this.templatePath('.env.example'),
+        this.templatePath(`${CRA_GENERATOR}/.env.example`),
         this.destinationPath(`${destinationPath}/.env.${env}`),
-        { apiUrl, domain },
+        payload,
       );
     }
-  }
-
-  _craAddBuildMultiEnv(destinationPath) {
-    this.spawnCommandSync('cd', [
-      this.destinationPath(destinationPath),
-      '&& npm i --save env-cmd',
-    ], {
-      shell: true,
-    });
-
-    const packageJsonRaw = fs.readFileSync(`${this.destinationPath(destinationPath)}/package.json`);
-    const packageJson = JSON.parse(packageJsonRaw);
-    packageJson.scripts = { ...packageJson.scripts };
-    packageJson.scripts.build = 'env-cmd -f .env.${APP_ENV} react-scripts build';
-    fs.writeFileSync(`${this.destinationPath(destinationPath)}/package.json`, JSON.stringify(packageJson, null, 2));
   }
 }
 

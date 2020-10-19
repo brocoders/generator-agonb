@@ -9,7 +9,7 @@ worker_is_enabled=<%= useWorker %>
 # cat .env.development >> .env
 
 # include aws functions
-source ./aws.sh
+source ./scripts/aws.sh
 
 gem install bundler -v 1.17.0
 bundle install --without development test

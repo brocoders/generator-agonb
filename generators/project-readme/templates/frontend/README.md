@@ -31,6 +31,7 @@ Additional env is release candidate.
 
 ##### env list  
 
+<% if (generator === 'cra') { %>
 | Parameter name  | Description | Example value |
 | ------------- | ------------- | ------------- |
 | `REACT_APP_API_URL`  | Default param. Backend API URL.  | URL |
@@ -38,6 +39,11 @@ Additional env is release candidate.
 | `NODE_ENV`  | Default param.  |  |
 | `NODE_PATH`  | Default param  |  |
 | `PUBLIC_URL`  | Default param. App domain with scheme  |   |
+<% } else { %>
+| Parameter name  | Description | Example value |
+| ------------- | ------------- | ------------- |
+| `NODE_ENV`  | Default param.  |  |
+<% } %>
 
 ### <a id="run-tests"></a> How to run the test suite
 
