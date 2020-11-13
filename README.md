@@ -123,7 +123,7 @@ yo agonb
   "generator-agonb": {
     "repositoryUrl": "git@github.com:brocoders/<appname>-frontend-app.git",
     "projectDestinationPath": "<appname>-frontend-app",
-    "domain": "https://<domain>.<subdomain>.brocoders.xyz",
+    "domain": "<subdomain>.brocoders.xyz",
     "projectTechnology": "frontend",
     "apiUrl": "https://<appname>.brocoders.xyz",
     "enablePullRequest": false,
