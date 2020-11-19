@@ -12,11 +12,11 @@ class NestJS extends Generator {
   async prompting() {
     this.answers = await this.prompt([
       {
-        type: 'list'
-        , name: 'databaseType'
-        , message: 'Your database type'
-        , choices: [{ value: 'postgres', name: 'PostgreSQL' }]
-      }
+        type: 'list',
+        name: 'databaseType',
+        message: 'Your database type',
+        choices: [{ value: 'postgres', name: 'PostgreSQL' }],
+      },
     ])
   }
 

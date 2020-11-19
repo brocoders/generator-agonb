@@ -15,5 +15,5 @@ const handleError = function (err) {
 
 
 module.exports = {
-  handleError
+  handleError,
 };

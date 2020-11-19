@@ -23,7 +23,7 @@ class ProjectREADME extends Generator {
 
       case 'frontend':
         this.fs.copyTpl(
-          this.templatePath(`frontend/README.md`),
+          this.templatePath('frontend/README.md'),
           this.destinationPath(`${destinationPath}/README.md`),
           { generator },
         );

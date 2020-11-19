@@ -11,13 +11,13 @@ class E2EProjectInitializer extends Generator {
   async prompting() {
     this.answers = await this.prompt([
       {
-        type: 'list'
-        , name: 'e2eType'
-        , message: 'E2E type'
-        , choices: [
+        type: 'list',
+        name: 'e2eType',
+        message: 'E2E type',
+        choices: [
           { value: 'cypress', name: 'Cypress' },
           // { value: 'robot_framework', name: 'Robot Framework' },
-        ]
+        ],
       },
     ]);
   }

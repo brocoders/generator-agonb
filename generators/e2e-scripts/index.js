@@ -3,7 +3,7 @@ const Generator = require('yeoman-generator');
 class E2EReportConfigInject extends Generator {
   async writing() {
     const {
-      destinationPath = '.'
+      destinationPath = '.',
     } = this.options;
     const { e2eType } = this.config.getAll();
     this.fs.copy(

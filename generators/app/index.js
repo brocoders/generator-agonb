@@ -13,33 +13,33 @@ class Agonb extends Generator {
   async prompting() {
     this.answers = await this.prompt([
       {
-        type: 'list'
-        , name: 'projectTechnology'
-        , message: 'Your project technology'
-        , choices: [
-          { value: 'nestjs', name: 'NestJS' }
-          , { value: 'frontend', name: 'Frontend Deployment' }
-          , { value: 'e2e', name: 'E2E project' }
-        ]
-      }
-      , {
-        type: 'input'
-        , name: 'repositoryUrl'
-        , message: 'Your project repository url'
+        type: 'list',
+        name: 'projectTechnology',
+        message: 'Your project technology',
+        choices: [
+          { value: 'nestjs', name: 'NestJS' },
+          { value: 'frontend', name: 'Frontend Deployment' },
+          { value: 'e2e', name: 'E2E project' },
+        ],
+      },
+      {
+        type: 'input',
+        name: 'repositoryUrl',
+        message: 'Your project repository url',
       }, {
-        type: 'list'
-        , name: 'useWorker'
-        , message: 'Do you need worker instance?'
-        , when: ({ projectTechnology }) => ['nestjs'].includes(projectTechnology)
-        , choices: [
+        type: 'list',
+        name: 'useWorker',
+        message: 'Do you need worker instance?',
+        when: ({ projectTechnology }) => ['nestjs'].includes(projectTechnology),
+        choices: [
           {
-            name: 'Yes', value: true
-          }
-          , {
-            name: 'No', value: false
-          }
-        ]
-      }
+            name: 'Yes', value: true,
+          },
+          {
+            name: 'No', value: false,
+          },
+        ],
+      },
     ]);
   }
 
@@ -79,7 +79,7 @@ class Agonb extends Generator {
 
   async writing() {
     const { projectTechnology } = this.answers;
-    this.composeWith(require.resolve(`../${projectTechnology}`), {  });
+    this.composeWith(require.resolve(`../${projectTechnology}`), { });
   }
 
   end() {

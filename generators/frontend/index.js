@@ -17,34 +17,34 @@ class FrontEndDeployment extends Generator {
   async prompting() {
     this.answers = await this.prompt([
       {
-        type: 'input'
-        , name: 'apiUrl'
-        , message: 'Backend API url. For example https://<appName>.domain.com . Ask in DevOps team or backend project backend developers or ignore'
+        type: 'input',
+        name: 'apiUrl',
+        message: 'Backend API url. For example https://<appName>.domain.com . Ask in DevOps team or backend project backend developers or ignore',
       },
       {
-        type: 'list'
-        , name: 'enablePullRequest'
-        , message: 'Enable pull request deploy scripts ?'
-        , choices: [
+        type: 'list',
+        name: 'enablePullRequest',
+        message: 'Enable pull request deploy scripts ?',
+        choices: [
           { value: true, name: 'Yes' },
           { value: false, name: 'No' },
-        ]
-      }
-      , {
-        type: 'list'
-        , name: 'projectGenerator'
-        , message: 'Select frontend project generator'
-        , choices: [
-          { value: GATSBY_GENERATOR, name: 'Gatsby.' },
-          { value: CRA_GENERATOR, name: 'Create react app' },
-          { value: EMPTY_GENERATOR, name: 'Empty project. You must configure buildspec.yml manually' }
-        ]
+        ],
       },
       {
-        type: 'input'
-        , name: 'domain'
-        , message: 'Frontend domain ( without scheme ), ask in DevOps team or skip and fill later'
-      }
+        type: 'list',
+        name: 'projectGenerator',
+        message: 'Select frontend project generator',
+        choices: [
+          { value: GATSBY_GENERATOR, name: 'Gatsby.' },
+          { value: CRA_GENERATOR, name: 'Create react app' },
+          { value: EMPTY_GENERATOR, name: 'Empty project. You must configure buildspec.yml manually' },
+        ],
+      },
+      {
+        type: 'input',
+        name: 'domain',
+        message: 'Frontend domain ( without scheme ), ask in DevOps team or skip and fill later',
+      },
     ]);
   }
 
