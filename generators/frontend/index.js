@@ -19,7 +19,7 @@ class FrontEndDeployment extends Generator {
       {
         type: 'input',
         name: 'apiUrl',
-        message: 'Backend API url. For example https://<appName>.domain.com . Ask in DevOps team or backend project backend developers or ignore',
+        message: 'Backend API url. For example https://<appName>.domain.com . Ask in DevOps team or backend project developers or ignore',
       },
       {
         type: 'list',
