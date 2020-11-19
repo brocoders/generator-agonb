@@ -18,7 +18,6 @@ class Agonb extends Generator {
         , message: 'Your project technology'
         , choices: [
           { value: 'nestjs', name: 'NestJS' }
-          , { value: 'rails', name: 'Ruby On Rails' }
           , { value: 'frontend', name: 'Frontend Deployment' }
           , { value: 'e2e', name: 'E2E project' }
         ]
@@ -31,7 +30,7 @@ class Agonb extends Generator {
         type: 'list'
         , name: 'useWorker'
         , message: 'Do you need worker instance?'
-        , when: ({ projectTechnology }) => ['nestjs', 'rails'].includes(projectTechnology)
+        , when: ({ projectTechnology }) => ['nestjs'].includes(projectTechnology)
         , choices: [
           {
             name: 'Yes', value: true

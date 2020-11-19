@@ -4,7 +4,6 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
 
 # Content
  - [Common Prerequisites](#common-prerequisites)
-    - [Rails Prerequisites](#rails-prerequisites)
  - [Installation from git repository](#installation)
     - [NPM](#install-yo-npm)
     - [YARN](#install-yo-yarn)
@@ -25,12 +24,6 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
 * yo - required
 * npx - required
 * yarn - optional
-
-### <a id="rails-prerequisites"></a> Rails Prerequisites
-* RVM
-* Installed `ruby-2.6.6` with RVM
-* Gem Bundler version less the 2.0 (It breaks CodeDeploy agent)
-
 
 ### <a id="installation"></a> Installation
 #### <a id="install-yo-npm"></a> NPM
@@ -68,7 +61,7 @@ Git project should have `-backend-app` suffix
 ### <a id="run-generator"></a> Run generator
 
 It's interactive and will ask for few questions:
-* Project technology (Ruby On Rails, NodeJs, Frontend, E2E)
+* Project technology (NodeJs, Frontend, E2E)
 * Project repository URL (SSH)
 
 Generator can be run at any directory with command:
@@ -78,7 +71,7 @@ yo agonb
 
 
 
-### <a id="usage-backend"></a> Backend ( Rails / NestJS )
+### <a id="usage-backend"></a> Backend ( NestJS )
 
 It's interactive and will ask for few questions:
 * Worker instance for background tasks
@@ -108,7 +101,7 @@ Working directory must be directory of a project and contain `.yo-rc.json`
 yo agonb:put-scripts
 ```
 `.yo-rc.json` will contain information about:
-- which type of scripts to put (NodeJs, RubyOnRails...)
+- which type of scripts to put (NodeJs...)
 - which values to put in template
 
 Normally `.yo-rc.json` is crated on project initialization:
@@ -143,7 +136,7 @@ yo agonb
     "repositoryUrl": "git@github.com:brocoders/<appname>-backend-app.git",
     "projectDestinationPath": "<appname>-backend-app",
     "applicationName": "<appname>",
-    "projectTechnology": "rails|nestjs",
+    "projectTechnology": "nestjs",
     "databaseType": "postgresql",
     "useWorker": true
   }

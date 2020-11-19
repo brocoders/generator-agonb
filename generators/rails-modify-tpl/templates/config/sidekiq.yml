@@ -1,9 +1,0 @@
-:concurrency: 5
-staging:
-  :concurrency: 10
-production:
-  :concurrency: 25
-:queues:
-  - critical
-  - default
-  - low

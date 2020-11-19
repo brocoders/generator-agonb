@@ -19,8 +19,8 @@ application up and running.
 
 ### <a id="main-lang-version"></a> Main language version
 
-Node / Ruby version  
-RVM / NVM version  
+Node  
+NVM version  
 
 ### <a id="system-dependencies"></a> System dependencies
 
