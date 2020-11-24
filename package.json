@@ -17,12 +17,12 @@
     "url": "git+https://github.com/brocoders/generator-agonb.git"
   },
   "keywords": "yeoman-generator",
-  "author": "Artem Stupachenko",
+  "author": "Artem Stupachenko & Andrii Yakovenko",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/brocoders/aws-ops-node-generator/issues"
+    "url": "https://github.com/brocoders/generator-agonb/issues"
   },
-  "homepage": "https://github.com/brocoders/aws-ops-node-generator#readme",
+  "homepage": "https://github.com/brocoders/generator-agonb#readme",
   "dependencies": {
     "yeoman-generator": "^3.2.0"
   },

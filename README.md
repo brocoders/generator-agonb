@@ -55,7 +55,9 @@ It performs next steps:
 * git remote add origin ....
 
 ### <a id="requirements"></a> Requirements
-Git project should have `-backend-app` suffix
+Backend git repository should have `-backend-app` suffix.  
+Frontend git repository should have `-frontend-app` suffix.  
+**Other repositories naming return error.**  
 
 ## Usage
 ### <a id="run-generator"></a> Run generator
@@ -85,6 +87,8 @@ It's interactive and will ask for few questions:
     - create react app
     - gatsby
     - empty project
+* Backend domain ( can be skipped and ignore if you don't need API )
+* Frontend domain ( can be skipped first time but must be filled before deploy )
 
 
 ### <a id="usage-e2e"></a> E2E
@@ -110,7 +114,8 @@ yo agonb
 ```
 
 ### <a id="frontend-deployment-exists"></a> Frontend Deployment example
-.yo-rc.json
+Create file `.yo-rc.json`  
+
 ```
 {
   "generator-agonb": {
@@ -125,11 +130,12 @@ yo agonb
 }
 ```
 
- - `domain` - Frontend domain: ask in DevOps team
+ - `domain` - Frontend domain: ask in DevOps team. **Must be filled**
 
 
 ### <a id="backend-deployment-exists"></a> Backend Deployment example
-.yo-rc.json
+Create file `.yo-rc.json`  
+
 ```
 {
   "generator-agonb": {
@@ -144,8 +150,8 @@ yo agonb
 ```
 
 ### <a id="e2e-cypress-exists"></a> Applying to existing Cypress project
-Create file  
-.yo-rc.json
+Create file `.yo-rc.json`  
+
 ```
 {
   "generator-agonb": {
