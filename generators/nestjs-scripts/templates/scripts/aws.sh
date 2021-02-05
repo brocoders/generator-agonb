@@ -1,6 +1,5 @@
 #!/bin/bash
 
-env_file_name='production.env'
 database_type='<%= databaseType %>'
 
 get_ssm_param() {
@@ -25,16 +24,14 @@ init_aws_env() {
     user_access_key_id=$(get_ssm_param "iam/access-key-id")
     user_secret_access_key=$(get_ssm_param "iam/secret-access-key")
 
-    [[ -f ${env_file_name} ]] && rm ${env_file_name} || echo ${env_file_name} is not exists yet
-
     # also you can export env variables over write to file and read from file
-    echo DATABASE_NAME=$db_name >> $env_file_name
-    echo DATABASE_USERNAME=$db_user >> $env_file_name
-    echo DATABASE_PASSWORD=$db_password >> $env_file_name
-    echo DATABASE_HOST=$db_host >> $env_file_name
-    echo ACCESS_KEY_ID=$user_access_key_id >> $env_file_name
-    echo SECRET_ACCESS_KEY=$user_secret_access_key >> $env_file_name
-    echo AWS_DEFAULT_S3_BUCKET=$s3_name >> $env_file_name
-    echo AWS_DEFAULT_S3_URL=$s3_base_url >> $env_file_name
-    echo AWS_S3_REGION=$app_region >> $env_file_name
+    export DATABASE_NAME=$db_name
+    export DATABASE_USERNAME=$db_user
+    export DATABASE_PASSWORD=$db_password
+    export DATABASE_HOST=$db_host
+    export ACCESS_KEY_ID=$user_access_key_id
+    export SECRET_ACCESS_KEY=$user_secret_access_key
+    export AWS_DEFAULT_S3_BUCKET=$s3_name
+    export AWS_DEFAULT_S3_URL=$s3_base_url
+    export AWS_S3_REGION=$app_region
 }

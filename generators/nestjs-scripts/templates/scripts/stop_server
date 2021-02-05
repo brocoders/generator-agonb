@@ -2,15 +2,17 @@
 
 . ~/.nvm/nvm.sh
 
-app_name='<%= applicationName %>'
+app_name=$(cat /root/.env-app-name)
+env_type=$(cat /root/.env-type)
+env_stage=$(cat /root/.env-stage)
 
 stop() {
-    if [[ $DEPLOYMENT_GROUP_NAME = *"WebApp"* ]]
+    if [[ $env_type = "WebApp" ]]
     then
         pm2 delete $app_name || echo no running instance of $app_name
     fi
 
-    if [[ $DEPLOYMENT_GROUP_NAME = *"WorkerApp"* ]]
+    if [[ $env_type = "WorkerApp" ]]
     then
         echo TODO:implementStopCommandWorker
     #    pm2 delete $app_name-worker || echo no running instance of $app_name-worker
@@ -32,18 +34,18 @@ developmentStop() {
     stop
 }
 
-if [[ $DEPLOYMENT_GROUP_NAME = *"production"* ]]
+if [[ $env_stage = "production" ]]
 then
     productionStop
 fi
 
 
-if [[ $DEPLOYMENT_GROUP_NAME = *"release"* ]]
+if [[ $env_stage = "release" ]]
 then
     releaseCandidateStop
 fi
 
-if [[ $DEPLOYMENT_GROUP_NAME = *"dev"* ]]
+if [[ $env_stage = "dev" ]]
 then
     developmentStop
 fi
