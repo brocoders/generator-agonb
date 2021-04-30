@@ -7,40 +7,30 @@ npm i -g @nestjs/cli typescript ts-node
 npm i
 
 # include aws functions
-source ./aws.sh
+source ./scripts/aws.sh
+
+env_stage=$(cat /root/.env-stage)
 
 # when production
-if [[ $DEPLOYMENT_GROUP_NAME = *"prod"* ]]
+if [[ $env_stage = "prod" ]]
 then
-    app_name='<%= applicationName %>'
-    app_region='us-west-2'
-    prefix='prod'
-
     init_aws_env
 
-    sh ./scripts/production.sh ${app_region} ${app_name} ${prefix}
+    sh ./scripts/production.sh
 fi
 
 # when release candidate
-if [[ $DEPLOYMENT_GROUP_NAME = *"release"* ]]
+if [[ $env_stage = "release" ]]
 then
-    app_name='<%= applicationName %>'
-    app_region='us-west-2'
-    prefix='release'
-
     init_aws_env
 
-    sh ./scripts/release-candidate.sh ${app_region} ${app_name} ${prefix}
+    sh ./scripts/release-candidate.sh
 fi
 
 # when development
-if [[ $DEPLOYMENT_GROUP_NAME = *"dev"* ]]
+if [[ $env_stage = "dev" ]]
 then
-    app_name='<%= applicationName %>'
-    app_region='us-west-2'
-    prefix='dev'
-
     init_aws_env
 
-    sh ./scripts/development.sh ${app_region} ${app_name} ${prefix}
+    sh ./scripts/development.sh
 fi
