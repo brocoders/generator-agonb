@@ -1,12 +1,14 @@
 #!/bin/bash
 
-database_type='<%= databaseType %>'
+env_region=$(cat /root/.env-region)
+app_name=$(cat /root/.env-app-name)
+env_stage=$(cat /root/.env-stage)
 
 get_ssm_param() {
     param_name=$1
     echo $(aws ssm get-parameter \
-        --region ${app_region} \
-        --name /${app_name}/${prefix}/${param_name} \
+        --region ${env_region} \
+        --name /${app_name}/${env_stage}/${param_name} \
         --with-decryption \
         --query Parameter.Value \
         --output text
@@ -33,5 +35,5 @@ init_aws_env() {
     export SECRET_ACCESS_KEY=$user_secret_access_key
     export AWS_DEFAULT_S3_BUCKET=$s3_name
     export AWS_DEFAULT_S3_URL=$s3_base_url
-    export AWS_S3_REGION=$app_region
+    export AWS_S3_REGION=$env_region
 }

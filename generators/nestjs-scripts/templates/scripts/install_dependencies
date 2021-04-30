@@ -7,11 +7,9 @@ npm i -g @nestjs/cli typescript ts-node
 npm i
 
 # include aws functions
-source ./aws.sh
+source ./scripts/aws.sh
 
 env_stage=$(cat /root/.env-stage)
-env_region=$(cat /root/.env-region)
-app_name=$(cat /root/.env-app-name)
 
 # when production
 if [[ $env_stage = "prod" ]]

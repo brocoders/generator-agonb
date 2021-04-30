@@ -4,9 +4,6 @@
 
 database_type='<%= databaseType %>'
 worker_is_enabled=<%= useWorker %>
-
-env_stage=$(cat /root/.env-stage)
-env_region=$(cat /root/.env-region)
 app_name=$(cat /root/.env-app-name)
 env_type=$(cat /root/.env-type)
 
@@ -22,7 +19,6 @@ export API_PREFIX=api/v1
 export AUTH_JWT_TOKEN_EXPIRES_IN=3600
 export DATABASE_PORT=5432
 export DATABASE_TYPE=$database_type
-export AWS_S3_REGION=$env_region
 
 if [[ $env_type = "WebApp" ]]
 then
