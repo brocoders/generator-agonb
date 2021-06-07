@@ -1,0 +1,45 @@
+#!/bin/bash
+
+. ~/.nvm/nvm.sh
+
+app_name=$(cat /root/.env-app-name)
+env_type=$(cat /root/.env-type)
+env_stage=$(cat /root/.env-stage)
+
+stop() {
+    if [[ $env_type = "WebApp" ]]
+    then
+        pm2 delete $app_name || echo no running instance of $app_name
+    fi
+}
+
+productionStop() {
+    # you can implement custom stop any services
+    stop
+}
+
+releaseCandidateStop() {
+    # you can implement custom stop any services
+    stop
+}
+
+developmentStop() {
+    # you can implement custom stop any services
+    stop
+}
+
+if [[ $env_stage = "production" ]]
+then
+    productionStop
+fi
+
+
+if [[ $env_stage = "release" ]]
+then
+    releaseCandidateStop
+fi
+
+if [[ $env_stage = "dev" ]]
+then
+    developmentStop
+fi

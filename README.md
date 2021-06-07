@@ -10,11 +10,13 @@ Yeoman generator for generating AWS deployment configs for back/front-end applic
  - [Description](#description)
  - [Usage](#run-generator)
     - [Backend](#usage-backend)
+    - [NextJS SSR](#usage-nextjs-ssr)
     - [Frontend](#usage-frontend)
     - [E2E](#usage-e2e)
  - [Applying to existing repo without clonning](#apply-generator-exists)
    - [Frontend Deployment example](#frontend-deployment-exists)
    - [Backend Deployment example](#backend-deployment-exists)
+   - [NextJS SSR Deployment example](#nextjs-ssr-deployment-exists)
    - [Applying to existing Cypress project](#e2e-cypress-exists)
 
 
@@ -79,6 +81,7 @@ It's interactive and will ask for few questions:
 * Worker instance for background tasks
 * DataBase client (Default is `postgres`)
 
+### <a id="usage-nextjs-ssr"></a> NextJS SSR
 
 ### <a id="usage-frontend"></a> Frontend
 
@@ -145,6 +148,22 @@ Create file `.yo-rc.json`
     "projectTechnology": "nestjs",
     "databaseType": "postgresql",
     "useWorker": true
+  }
+}
+```
+
+### <a id="nextjs-ssr-deployment-exists"></a> Backend Deployment example
+Create file `.yo-rc.json`  
+
+```
+{
+  "generator-agonb": {
+    "repositoryUrl": "git@github.com:brocoders/<appname>-backend-app.git",
+    "projectDestinationPath": "<appname>-backend-app",
+    "applicationName": "<appname>",
+    "projectTechnology": "nextjs",
+    "databaseType": "false",
+    "useWorker": false
   }
 }
 ```
