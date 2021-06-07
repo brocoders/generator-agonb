@@ -12,9 +12,7 @@ class NextJSScripts extends Generator {
     this.fs.copyTpl(
       this.templatePath(),
       this.destinationPath(destinationPath),
-      {
-        databaseType,
-      }
+      {},
     );
 
     this.composeWith(require.resolve('../project-readme'), {
