@@ -18,6 +18,7 @@ class Agonb extends Generator {
         message: 'Your project technology',
         choices: [
           { value: 'nestjs', name: 'NestJS' },
+          { value: 'nextjs', name: 'NextJS (Frontend SSR)' },
           { value: 'frontend', name: 'Frontend Deployment' },
           { value: 'e2e', name: 'E2E project' },
         ],
