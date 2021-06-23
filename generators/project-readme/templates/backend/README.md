@@ -109,8 +109,6 @@ Replace `<applicationName>/<env>` to you app name.
 | `/<applicationName>/<env>/worker/ip`  | Default param. When worker instance created.  | IP |
 | `/<applicationName>/<env>/s3/name`  | Default param. Bucket name  |  |
 | `/<applicationName>/<env>/s3/domain`  | Default param. Bucket name  |  |
-| `/<applicationName>/<env>/iam/access-key-id`  | Default param  | Use AWS IAM credentials only on server. |
-| `/<applicationName>/<env>/iam/secret-access-key`  | Default param  | Use AWS IAM credentials only on server. |
 | `/<applicationName>/<env>/db/password`  | Default param  |  |
 | `/<applicationName>/<env>/db/name`  | Default param  |  |
 | `/<applicationName>/<env>/db/user`  | Default param  |  |
