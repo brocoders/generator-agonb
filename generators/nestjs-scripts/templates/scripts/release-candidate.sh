@@ -3,7 +3,6 @@
 . ~/.nvm/nvm.sh
 
 database_type='<%= databaseType %>'
-worker_is_enabled=<%= useWorker %>
 app_name=$(cat ~/.env-app-name)
 env_type=$(cat ~/.env-type)
 
@@ -22,7 +21,8 @@ export DATABASE_TYPE=$database_type
 
 if [[ $env_type = "WebApp" ]]
 then
-    if [[ $worker_is_enabled = true ]]; then
+    worker_is_enabled=$(get_ssm_param "worker/enable")
+    if [[ $worker_is_enabled = "true" ]]; then
       worker_ip=$(get_ssm_param "worker/ip")
       export WORKER_HOST=redis://$worker_ip:6379/1
     fi
