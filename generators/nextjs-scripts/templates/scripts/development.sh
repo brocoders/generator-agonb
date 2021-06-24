@@ -2,8 +2,8 @@
 
 . ~/.nvm/nvm.sh
 
-app_name=$(cat /root/.env-app-name)
-env_type=$(cat /root/.env-type)
+app_name=$(cat ~/.env-app-name)
+env_type=$(cat ~/.env-type)
 
 # include aws functions
 source ./scripts/aws.sh

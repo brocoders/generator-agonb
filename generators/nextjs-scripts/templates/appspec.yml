@@ -2,16 +2,16 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/node-js-app
+    destination: /home/ec2-user/app
 hooks:
   AfterInstall:
     - location: scripts/install_dependencies
       timeout: 600
-      runas: root
+      runas: ec2-user
   ApplicationStop:
     - location: scripts/stop_server
       timeout: 300
-      runas: root
+      runas: ec2-user
   BeforeInstall:
     - location: scripts/cleanup.sh
-      runas: root
+      runas: ec2-user

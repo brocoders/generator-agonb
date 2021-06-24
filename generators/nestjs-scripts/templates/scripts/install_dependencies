@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/ec2-user/node-js-app
+cd /home/ec2-user/app
 
 . ~/.nvm/nvm.sh
 
@@ -9,7 +9,7 @@ npm i
 # include aws functions
 source ./scripts/aws.sh
 
-env_stage=$(cat /root/.env-stage)
+env_stage=$(cat ~/.env-stage)
 
 # when production
 if [[ $env_stage = "prod" ]]
