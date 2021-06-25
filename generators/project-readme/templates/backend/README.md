@@ -35,9 +35,9 @@ NVM version
 
  `<env>` - can be `dev` | `release` | `prod`. By default is `dev`  
 
-You can get current `<applicationName>` on server from file `/root/.env-app-name`   
+You can get current `<applicationName>` on server from file `~/.env-app-name`   
 
-You can get current `<env>` on server from file `/root/.env-stage`  
+You can get current `<env>` on server from file `~/.env-stage`  
 
 
   - create
