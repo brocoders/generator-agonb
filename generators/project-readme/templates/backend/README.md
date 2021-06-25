@@ -35,9 +35,9 @@ NVM version
 
  `<env>` - can be `dev` | `release` | `prod`. By default is `dev`  
 
-You can get current `<applicationName>` on server from file `/root/.env-app-name`   
+You can get current `<applicationName>` on server from file `~/.env-app-name`   
 
-You can get current `<env>` on server from file `/root/.env-stage`  
+You can get current `<env>` on server from file `~/.env-stage`  
 
 
   - create
@@ -106,7 +106,8 @@ Replace `<applicationName>/<env>` to you app name.
 
 | Parameter name  | Description | Example value |
 | ------------- | ------------- | ------------- |
-| `/<applicationName>/<env>/worker/ip`  | Default param. When worker instance created.  | IP |
+| `/<applicationName>/<env>/worker/enable`  | Default param. When worker instance created.  | true / false |
+| `/<applicationName>/<env>/worker/ip`  | Default param. When worker enabled.  | IP |
 | `/<applicationName>/<env>/s3/name`  | Default param. Bucket name  |  |
 | `/<applicationName>/<env>/s3/domain`  | Default param. Bucket name  |  |
 | `/<applicationName>/<env>/db/password`  | Default param  |  |

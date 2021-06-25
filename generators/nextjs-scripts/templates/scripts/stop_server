@@ -2,9 +2,9 @@
 
 . ~/.nvm/nvm.sh
 
-app_name=$(cat /root/.env-app-name)
-env_type=$(cat /root/.env-type)
-env_stage=$(cat /root/.env-stage)
+app_name=$(cat ~/.env-app-name)
+env_type=$(cat ~/.env-type)
+env_stage=$(cat ~/.env-stage)
 
 stop() {
     if [[ $env_type = "WebApp" ]]

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-env_region=$(cat /root/.env-region)
-app_name=$(cat /root/.env-app-name)
-env_stage=$(cat /root/.env-stage)
+env_region=$(cat ~/.env-region)
+app_name=$(cat ~/.env-app-name)
+env_stage=$(cat ~/.env-stage)
 
 get_ssm_param() {
     param_name=$1
